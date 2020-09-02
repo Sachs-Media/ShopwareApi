@@ -1,0 +1,2 @@
+-r shopwareapi/requirements.txt
+-r docs/requirements.txt

@@ -1,0 +1,110 @@
+import requests
+import time
+from shopwareapi.utils.cache import token_cache
+import shopwareapi.models
+from shopware.models import Product, Currency
+import json
+
+
+class ShopwareClient:
+
+    def __init__(self, base_url, version, client_id, client_secret):
+        self._base_url = base_url
+        self._client_id = client_id
+        self._client_secret = client_secret
+        self._authorization = None
+        self._version = version
+
+    def _default_header(self):
+        return {
+            "Authorization": "Bearer {}".format(self._get_token()),
+            "Content-Type": "application/json"
+        }
+
+    @token_cache
+    def _get_token(self):
+        response = requests.post(self.build_url(version=False, model="oauth/token"), data={
+            "grant_type": "client_credentials",
+            "client_id": self._client_id,
+            "client_secret": self._client_secret
+        })
+        self._authorization = {"response": response.json(), "t": time.time() }
+        return response.json().get("access_token", None)
+
+    def build_url(self, base_url=None, version=None, model=None, **kwargs):
+        """
+            Build a url used for Request by given arguments
+            :param base_url: Custom URL that should be requested; If None the SevDeskClient base_url attribute would be used
+            :param version: Custom API Version which should be used; If None the SevDeskClient version attribute would be used
+            :param model: Required. Model which should be used for Request
+            :return:
+        """
+        if base_url is None:
+            base_url = self._base_url
+
+        if version is None:
+            version = self._version+"/"
+        elif version is not False:
+            version = version+"/"
+        else:
+            version = ""
+
+        assert model is not None
+
+        if type(model) in [list, tuple]:
+            model = "/".join(model)
+
+        query = "?"
+        for key, value in kwargs.items():
+            query += "{}={}&".format(key, value)
+        if query == "?":
+            query = ""
+
+        url = "{base_url}/api/{version}{model}{query}".format(base_url=base_url, version=version, model=model, query=query)
+        return url
+
+    def post(self, url, data=None, files=None, headers=None):
+        print(url)
+        print("#"*100)
+        header = self._default_header()
+
+        if headers is not None:
+            header.update(headers)
+
+
+        print(data)
+        response = requests.post(url, data=json.dumps(data), headers=header, files=files)
+
+        if 299 <= response.status_code >= 200:
+            print(data)
+            print(response.json())
+            raise ValueError("This is not a valid request. Statuscode %s" % str(response.status_code))
+
+        return response.json()
+        
+    def get(self, url):
+
+        header = self._default_header()
+
+        if header is not None:
+            header.update(header)
+        
+        response = requests.get(url, headers=header)
+        
+        if 299 <= response.status_code >= 200:
+            raise ValueError("This is not a valid request. Statuscode %s" % str(response.status_code))
+
+        return response.json()
+        
+        
+    @property
+    def controller(self):
+        return ShopwareClient.Controller(self)
+
+    
+    class Controller:
+
+        def __init__(self, client):
+            print(shopwareapi.models.__dict__)
+            self.Product = Product(options={"client": client}).controller
+            self.Currency = Currency(options={"client": client}).controller
