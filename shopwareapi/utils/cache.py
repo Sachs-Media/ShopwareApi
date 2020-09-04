@@ -1,5 +1,6 @@
 import time
 
+
 def token_cache(func):
     def wrapper(self, *args, **kwargs):
         if self._authorization is None or not self._authorization.get("t"):

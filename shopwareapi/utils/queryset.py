@@ -4,7 +4,6 @@ class Queryset:
     def __init__(self, model, *args):
         self._model = model
 
-
         for item in args:
 
             if not isinstance(item, self._model):
@@ -18,3 +17,9 @@ class Queryset:
 
     def all(self):
         return self._model_list
+
+    def parent_update(self, data, related_fields):
+        return {self._model.CONTROLLER_CLASS.api_model: list(item.get_dict() for item in self._model_list)}
+
+    def first(self):
+        return self._model_list[0]

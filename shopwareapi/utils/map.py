@@ -16,17 +16,23 @@ class AttributeMixin(object):
             :return:
         """
         for field in self.get_fields():
-
             if needle in field.aliases or \
                needle == field.attribute_name or \
                needle == field.api_name:
                 return field
 
     def map_attributes(self, data):
-        for key, item in data.items():
+        if type(data) == list:
+            items = data
+        else:
+            items = data.items()
+        for key, item in items:
             field = self.find_field(key)
             if field is None:
                 log.debug("Attribute Mapping: Ignore parameter '{}'".format(key))
             else:
-                converted_information = field.converter(self.get_client, data, field, key)
-                setattr(self, *converted_information)
+                if data[key] is None:
+                    setattr(self, key, None)
+                else:
+                    converted_information = field.converter(self.get_client, data, field, key)
+                    setattr(self, *converted_information)

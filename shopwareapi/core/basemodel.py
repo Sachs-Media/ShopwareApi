@@ -7,7 +7,6 @@ class BaseModel(maputil.AttributeMixin):
     CONTROLLER_CLASS = None
     
     FIELDS = None
-    
 
     def __init__(self, **kwargs):
 
@@ -30,22 +29,19 @@ class BaseModel(maputil.AttributeMixin):
         if self._client is None:
             self._client = client
         else:
-            raise exception.AlreadyConnected("Another SevDeskClient is linked to this Model")
-
+            raise exception.AlreadyConnected("Another ShopwareClient is linked to this Model")
 
     @staticmethod
-    def convert(sevdesk_client, data, field, key):
+    def convert(client, data, field, key):
         """
-        This method should be used by SevdeskTranslate to Convert a attribute to a submodal
+        This method should be used by ShopwareTranslate to Convert a attribute to a submodal
         
         :return:
         """
         raise NotImplemented("This method is currently not implemented")
 
-
     def get_options(self):
         return {}
-        
         
     def get_fields(self):
         if self.__class__.FIELDS is None:
@@ -61,21 +57,46 @@ class BaseModel(maputil.AttributeMixin):
 
         if data is None:
             data = {}
-        
-
         for field in self.get_fields():
-            
             if hasattr(self, field.attribute_name):
                 value = getattr(self, field.attribute_name)
-
                 if field.nested:
                     # find fields which are related to the nested field
-                    related_fields = list(filter(lambda item: item.related_to == field.attribute_name, self.get_fields()))
+                    related_fields = list(
+                        filter(lambda item: item.related_to == field.attribute_name, self.get_fields())
+                    )
                     data.update(value.parent_update(data, related_fields))
                 else:
-                    data[field.api_name] = value
+                    if value is not None:
+                        data[field.api_name] = value
 
             elif field.required and not hasattr(self, field.attribute_name):
                 raise ValueError("The parameter {} is required".format(field.attribute_name))
-
         return data
+
+    def parent_update(self, data, related_fields):
+        new_data = {}
+        for field in related_fields:
+            local_field_list = list(
+                set(
+                    filter(
+                        lambda item: item is not None,
+                        [
+                            self.find_field(field.api_name),
+                            self.find_field(field.attribute_name)
+                        ] +
+                        [
+                            self.find_field(alias) for alias in field.aliases
+                        ]
+                    )
+                )
+            )
+
+            if len(local_field_list) > 1:
+                raise ValueError("Multiple fields have the same alias, apiname or name")
+
+            local_field = local_field_list[0]
+            if hasattr(self, local_field.attribute_name):
+                new_data[field.api_name] = getattr(self, local_field.attribute_name)
+
+        return new_data

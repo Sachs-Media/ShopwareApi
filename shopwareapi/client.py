@@ -2,7 +2,7 @@ import requests
 import time
 from shopwareapi.utils.cache import token_cache
 import shopwareapi.models
-from shopware.models import Product, Currency
+from shopwareapi.models import Product, Currency, Category
 import json
 
 
@@ -34,8 +34,8 @@ class ShopwareClient:
     def build_url(self, base_url=None, version=None, model=None, **kwargs):
         """
             Build a url used for Request by given arguments
-            :param base_url: Custom URL that should be requested; If None the SevDeskClient base_url attribute would be used
-            :param version: Custom API Version which should be used; If None the SevDeskClient version attribute would be used
+            :param base_url: Custom URL that should be requested; If None the ShopwareClient base_url attribute would be used
+            :param version: Custom API Version which should be used; If None the ShopwareClient version attribute would be used
             :param model: Required. Model which should be used for Request
             :return:
         """
@@ -64,22 +64,13 @@ class ShopwareClient:
         return url
 
     def post(self, url, data=None, files=None, headers=None):
-        print(url)
-        print("#"*100)
         header = self._default_header()
-
         if headers is not None:
             header.update(headers)
-
-
-        print(data)
         response = requests.post(url, data=json.dumps(data), headers=header, files=files)
 
         if 299 <= response.status_code >= 200:
-            print(data)
-            print(response.json())
             raise ValueError("This is not a valid request. Statuscode %s" % str(response.status_code))
-
         return response.json()
         
     def get(self, url):
@@ -95,16 +86,23 @@ class ShopwareClient:
             raise ValueError("This is not a valid request. Statuscode %s" % str(response.status_code))
 
         return response.json()
-        
+
+    def patch(self, url, data=None, files=None, headers=None):
+        header = self._default_header()
+
+        if header is not None:
+            header.update(header)
+        response = requests.patch(url, data=json.dumps(data), headers=header, files=files)
+        if 299 <= response.status_code >= 200:
+            raise ValueError("This is not a valid request. Statuscode %s" % str(response.status_code))
+        return response.json()
         
     @property
     def controller(self):
         return ShopwareClient.Controller(self)
 
-    
     class Controller:
-
         def __init__(self, client):
-            print(shopwareapi.models.__dict__)
             self.Product = Product(options={"client": client}).controller
             self.Currency = Currency(options={"client": client}).controller
+            self.Category = Category(options={"client": client}).controller

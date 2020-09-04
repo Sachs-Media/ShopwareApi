@@ -1,12 +1,11 @@
 import logging
 import shopwareapi.exception as exception
 from shopwareapi.core.basemodel import BaseModel
-from shopwareapi.client import ShopwareClient
 from shopwareapi.utils.queryset import Queryset
+import json
 
 
 log = logging.getLogger("basecontroller")
-
 
 
 class BaseController:
@@ -21,19 +20,14 @@ class BaseController:
             :type model: BaseModel
         """
         self.model = model
-        
 
     def get_client(self):
-        """
-            Getter for deliver the SevDeskClient object
-            :return SevDeskClient:
-        """
 
         if not self.model.get_client():
-            raise exception.NotConnectedToClient("Please link this to ShopwareClient object. Using client.send(<thisobject>) ")
+            raise exception.NotConnectedToClient(
+                "Please link this to ShopwareClient object. Using client.send(<thisobject>)")
         return self.model.get_client()
 
-        
     def create(self, *args, **kwargs):
         """
             Creates a new Object at API
@@ -45,10 +39,12 @@ class BaseController:
         request_url = self.get_client().build_url(model=self.api_model)
         data = self.model.get_dict()
         data.update(kwargs)
-        response = self.get_client().post(request_url, data)
-        #self.model.map_attributes(response["objects"])
-
-        return response
+        try:
+            response = self.get_client().post(request_url, data)
+        except json.decoder.JSONDecodeError:
+            pass
+        res = self.find(self.model.productNumber, matches_field="productNumber")
+        return res.first()
 
     def find(self, term, matches_field=None):
         """
@@ -98,42 +94,20 @@ class BaseController:
             Requests all Information for a specific product uuid
         """
         
-        request_url = self.get_client().build_url(model="product/"+uuid)
+        request_url = self.get_client().build_url(model=self.api_model+"/"+uuid)
         response = self.get_client().get(request_url)
-        
-        
-        model = self.model.__class__(options={"client": self.get_client()})
 
-        model.map_attributes(response["data"]["attributes"])
+        model = self.model.__class__(options={"client": self.get_client()})
+        helper_dict = response["data"]
+        helper_dict.update(response["data"]["attributes"])
+        model.map_attributes(helper_dict)
         
         return model
 
-        
-        #model_list = []
-        
-        #for item in response["objects"]:
-        #    model = self.model.__class__(options={"sevdesk_client": self.get_sevdesk_client()})
-        #    model.map_attributes(item)
-        #    model_list.append(model)
+    def update(self, *args, **kwargs):
+        request_url = self.get_client().build_url(model=self.api_model+"/"+self.model.id)
+        data = self.model.get_dict()
+        data.update(kwargs)
+        response = self.get_client().patch(request_url, data)
 
-        #return model_list
-
-    # def get_or_create(self, **kwargs):
-    #     """
-    #         Searches a Value, if no result creates a new one with the same
-    #         Values
-    #         :return tuple(object: BaseModel, created: bool): object contains the (existing) api object, created is a boolean if the data
-    #         was new created or already exist
-    #     """
-    #     result = self.find(**kwargs)
-    #     if len(result) <= 0:
-    #         self.create(**kwargs)
-    #         created = True
-    #     elif len(result) > 1:
-    #         log.info([ item.name for item in result ])
-    #         raise ValueError("too many results")
-    #     else:
-    #         self.model.map_attributes(result[0].get_dict())
-    #         created = False
-
-    #     return self.model, created
+        return response

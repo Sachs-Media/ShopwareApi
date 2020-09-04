@@ -1,13 +1,13 @@
 class NotConnectedToClient(AttributeError):
     """
-        Raises when a method of the model object is called without a reference to SevDeskClient
+        Raises when a method of the model object is called without a reference to ShopwareClient
     """
     pass
 
 
 class AlreadyConnected(ValueError):
     """
-        Raises when a model was tryed to referenced second time to a sevdeskclient
+        Raises when a model was tryed to referenced second time to a shopwareclient
     """
     pass
 

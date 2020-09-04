@@ -1,2 +1,8 @@
 .c9
 __pycache__
+.idea/
+temp_schema/
+tests/
+dist/
+build/
+shopwareapi.egg-info/
