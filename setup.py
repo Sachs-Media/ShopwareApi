@@ -21,5 +21,6 @@ setuptools.setup(
         "Topic :: Utilities",
         "Topic :: Software Development :: Libraries"
     ],
+    installed_requires=["requests>=2.24.0"],
     python_requires='>=3.6',
 )
