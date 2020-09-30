@@ -96,6 +96,7 @@ class ShopwareClient:
 
     def postprocessing(self, response):
         if 299 <= response.status_code >= 200:
+            log.debug(response.request.body)
             log.debug(response.text)
             raise ValueError("This is not a valid request. Statuscode %s" % str(response.status_code))
 
