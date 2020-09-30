@@ -56,7 +56,7 @@ class BaseModel(maputil.AttributeMixin):
         """
 
         if data is None:
-            data = {}
+            data = dict()
         for field in self.get_fields():
             if hasattr(self, field.attribute_name):
                 value = getattr(self, field.attribute_name)
@@ -69,9 +69,9 @@ class BaseModel(maputil.AttributeMixin):
                 else:
                     if value is not None:
                         data[field.api_name] = value
-
             elif field.required and not hasattr(self, field.attribute_name):
                 raise ValueError("The parameter {} is required".format(field.attribute_name))
+
         return data
 
     def parent_update(self, data, related_fields):
@@ -98,5 +98,4 @@ class BaseModel(maputil.AttributeMixin):
             local_field = local_field_list[0]
             if hasattr(self, local_field.attribute_name):
                 new_data[field.api_name] = getattr(self, local_field.attribute_name)
-
         return new_data

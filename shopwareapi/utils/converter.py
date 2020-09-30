@@ -30,7 +30,7 @@ class Convert:
     @staticmethod
     def to_boolean(client, data, field, key):
         """
-            Converts input value to float
+            Converts input value to boolean
             :return:
         """
         return field.attribute_name, bool(data[key])

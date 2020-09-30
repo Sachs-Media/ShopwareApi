@@ -3,6 +3,7 @@ from shopwareapi.core.basemodel import BaseModel
 from shopwareapi.utils.converter import Convert
 from shopwareapi.controller.product import ProductController
 from shopwareapi.models.price import Price
+from shopwareapi.models.tax import Tax
 
 
 class Product(BaseModel):
@@ -13,7 +14,8 @@ class Product(BaseModel):
     BaseField("id", "id", required=False),
     BaseField("uuid", "uuid", required=False),
     BaseField("uidtId", "uidtId", required=False),
-    BaseField("taxId", "taxId", required=False),
+    BaseField("tax", "tax", required=False, nested=True, converter=Tax.convert),
+    BaseField("taxId", "taxId", converter=Tax.convert, related_to="tax"),
     BaseField("price", "price", required=False, converter=Price.convert_queryset, nested=True),
     BaseField("productNumber", "productNumber", required=False),
     BaseField("stock", "stock", required=False, converter=Convert.to_int),
@@ -32,7 +34,6 @@ class Product(BaseModel):
     BaseField("markAsTopseller", "markAsTopseller", required=False),
     BaseField("mainCategories", "mainCategories", required=False),
     BaseField("tags", "tags", required=False),
-    BaseField("tax", "tax", required=False),
     BaseField("description", "description", required=False),
     BaseField("customFields", "customFields", required=False),
     BaseField("crossSelling", "crossSelling", required=False),

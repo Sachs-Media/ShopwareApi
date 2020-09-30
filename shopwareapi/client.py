@@ -2,8 +2,11 @@ import requests
 import time
 from shopwareapi.utils.cache import token_cache
 import shopwareapi.models
-from shopwareapi.models import Product, Currency, Category
+from shopwareapi.models import Product, Currency, Category, Tax
 import json
+import logging
+
+log = logging.getLogger("swclient")
 
 
 class ShopwareClient:
@@ -68,11 +71,8 @@ class ShopwareClient:
         if headers is not None:
             header.update(headers)
         response = requests.post(url, data=json.dumps(data), headers=header, files=files)
+        return self.postprocessing(response)
 
-        if 299 <= response.status_code >= 200:
-            raise ValueError("This is not a valid request. Statuscode %s" % str(response.status_code))
-        return response.json()
-        
     def get(self, url):
 
         header = self._default_header()
@@ -81,11 +81,7 @@ class ShopwareClient:
             header.update(header)
         
         response = requests.get(url, headers=header)
-        
-        if 299 <= response.status_code >= 200:
-            raise ValueError("This is not a valid request. Statuscode %s" % str(response.status_code))
-
-        return response.json()
+        return self.postprocessing(response)
 
     def patch(self, url, data=None, files=None, headers=None):
         header = self._default_header()
@@ -93,10 +89,20 @@ class ShopwareClient:
         if header is not None:
             header.update(header)
         response = requests.patch(url, data=json.dumps(data), headers=header, files=files)
+        return self.postprocessing(response)
+
+    def postprocessing(self, response):
         if 299 <= response.status_code >= 200:
+            log.debug(response.text)
             raise ValueError("This is not a valid request. Statuscode %s" % str(response.status_code))
-        return response.json()
-        
+
+        try:
+            if response.text != "":
+                return response.json()
+        except json.decoder.JSONDecodeError as e:
+            log.debug(response.text)
+            raise e
+
     @property
     def controller(self):
         return ShopwareClient.Controller(self)
@@ -106,3 +112,4 @@ class ShopwareClient:
             self.Product = Product(options={"client": client}).controller
             self.Currency = Currency(options={"client": client}).controller
             self.Category = Category(options={"client": client}).controller
+            self.Tax = Tax(options={"client": client}).controller
