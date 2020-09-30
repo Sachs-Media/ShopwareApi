@@ -32,7 +32,10 @@ class ShopwareClient:
             "client_secret": self._client_secret
         })
         self._authorization = {"response": response.json(), "t": time.time() }
-        return response.json().get("access_token", None)
+        data = response.json()
+        if "access_token" not in data:
+            log.info(data)
+        return data.get("access_token", None)
 
     def build_url(self, base_url=None, version=None, model=None, **kwargs):
         """

@@ -6,3 +6,4 @@ tests/
 dist/
 build/
 shopwareapi.egg-info/
+example.py
