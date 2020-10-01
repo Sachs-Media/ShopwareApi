@@ -1,8 +1,7 @@
 import requests
 import time
 from shopwareapi.utils.cache import token_cache
-import shopwareapi.models
-from shopwareapi.models import Product, Currency, Category, Tax
+from shopwareapi.models import Product, Currency, Category, Tax, Manufacturer
 import json
 import logging
 
@@ -117,3 +116,4 @@ class ShopwareClient:
             self.Currency = Currency(options={"client": client}).controller
             self.Category = Category(options={"client": client}).controller
             self.Tax = Tax(options={"client": client}).controller
+            self.Manufacturer = Manufacturer(options={"client": client}).controller

@@ -3,19 +3,25 @@ from shopwareapi.models.price import Price
 from shopwareapi.models.product import Product
 import sys
 import uuid
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
 s = ShopwareClient(
-    base_url="http://localhost:8000",
+    base_url="http://janao.de",
     version="v3",
-    client_id="SWIAVUDPDJNQR2W4SULHODZ4AW",
-    client_secret="bUh5ZkxEaUtYOEVQa0JaaXJxVE92S09BTmVaY1RsOEF5clA5dDQ"
+    client_id="SWIADTVMAHVTBTY1WJZYD3V2TA",
+    client_secret="eWU3MUQyZjJZQXd3ZHNMRjdSYVFhdWRQZ05IUUJxQUlDZ2VEWkk"
 )
-
-# aa019a7fef714322a863c3572cc566bb
-
-#find = s.controller.Product.find(term="light")
-#get = s.controller.Product.get(term="aa019a7fef714322a863c3572cc566bb")
+#find  = s.controller.Product.find(term="light")
+#get   = s.controller.Product.get(term="aa019a7fef714322a863c3572cc566bb")
 #patch = s.controller.Product.patch(uuid="aa019a7fef714322a863c3572cc566bb")
+
 cur = s.controller.Currency.find("EUR").all()[0]
+tax = s.controller.Tax.find(19.0, matches_field="taxRate").all()[0]
+
+print(tax)
+
 price = Price(** {
              "currency": cur,
              "gross": 150000,
@@ -29,9 +35,10 @@ create_product = Product(
     name="asdfsdfadfdfgsgfhsghfgfgffgd",
     productNumber=uuid.uuid4(),
     stock=10,
-    taxId="03f165404f214c53ab95301965887cc9",
+    tax=tax,
     price=[price],
     options={"client": s}
 ).controller.create()
+
 create_product.name="es hat funktioniert"
 create_product.controller.update()
