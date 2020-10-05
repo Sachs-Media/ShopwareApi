@@ -1,6 +1,6 @@
 from shopwareapi.core.basecontroller import BaseController
 
 
-class ManufacturerController(BaseController):
+class ProductManufacturerController(BaseController):
 
-    api_model = "manufacturer"
+    api_model = "product-manufacturer"

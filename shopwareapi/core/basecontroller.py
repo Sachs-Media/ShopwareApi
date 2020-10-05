@@ -12,7 +12,6 @@ class BaseController:
     """
         This class manages the datastructures and URLs for a Model
     """
-
     def __init__(self, model):
         """
             Constructor. adds model as Attribute
@@ -22,7 +21,6 @@ class BaseController:
         self.model = model
 
     def get_client(self):
-
         if not self.model.get_client():
             raise exception.NotConnectedToClient(
                 "Please link this to ShopwareClient object. Using client.send(<thisobject>)")
@@ -80,7 +78,6 @@ class BaseController:
 
                     if item_term == term:
                         result_uuid.append(item["id"])
-
                 else:
                     result_uuid.append(item["id"])
         
