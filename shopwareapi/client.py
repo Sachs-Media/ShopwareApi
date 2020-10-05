@@ -116,4 +116,4 @@ class ShopwareClient:
             self.Currency = Currency(options={"client": client}).controller
             self.Category = Category(options={"client": client}).controller
             self.Tax = Tax(options={"client": client}).controller
-            self.Manufacturer = ProductManufacturer(options={"client": client}).controller
+            self.ProductManufacturer = ProductManufacturer(options={"client": client}).controller
