@@ -17,3 +17,8 @@ class NonFilterableParameter(ValueError):
         This error rais when find is used with an  disallowed (not filterable) parameter
     """
     pass
+
+
+class MissingOption(AttributeError):
+    """"""
+    pass
