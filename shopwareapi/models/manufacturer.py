@@ -19,5 +19,5 @@ class Manufacturer(BaseModel):
         if isinstance(manufacturer, Manufacturer):
             return "manufacturer", manufacturer
         elif key == "manufacturerId":
-            model = client().controller.ManufacturerController.get(manufacturer)
+            model = client().controller.Manufacturer.get(manufacturer)
             return "manufacturer", model
