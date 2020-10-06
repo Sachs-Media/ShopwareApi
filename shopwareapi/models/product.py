@@ -5,6 +5,7 @@ from shopwareapi.controller.product import ProductController
 from shopwareapi.models.price import Price
 from shopwareapi.models.tax import Tax
 from shopwareapi.models.manufacturer import Manufacturer
+from shopwareapi.models.category import Category
 
 
 class Product(BaseModel):
@@ -13,13 +14,14 @@ class Product(BaseModel):
   
   FIELDS = (
     BaseField("id", "id", required=False),
+    BaseField("categories", "categories", required=False, converter=Category.convert_queryset, nested=True),
+    BaseField("price", "price", required=False, converter=Price.convert_queryset, nested=True),
     BaseField("uuid", "uuid", required=False),
     BaseField("uidtId", "uidtId", required=False),
     BaseField("tax", "tax", required=False, nested=True, converter=Tax.convert),
     BaseField("taxId", "taxId", converter=Tax.convert, related_to="tax"),
     BaseField("manufacturer", "manufacturer", required=False, nested=True, converter=Manufacturer.convert),
     BaseField("manufacturerId", "manufacturerId", converter=Manufacturer.convert, related_to="manufacturer"),
-    BaseField("price", "price", required=False, converter=Price.convert_queryset, nested=True),
     BaseField("productNumber", "productNumber", required=False),
     BaseField("stock", "stock", required=False, converter=Convert.to_int),
     BaseField("active", "active", required=False, converter=Convert.to_boolean),

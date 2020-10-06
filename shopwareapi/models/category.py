@@ -1,6 +1,7 @@
 from shopwareapi.core.basefield import BaseField
 from shopwareapi.core.basemodel import BaseModel
 from shopwareapi.controller.category import CategoryController
+from shopwareapi.utils.queryset import Queryset
 
 
 class Category(BaseModel):
@@ -28,3 +29,17 @@ class Category(BaseModel):
         BaseField("footerSalesChannels", "footerSalesChannels", required=False),
         BaseField("serviceSalesChannels", "serviceSalesChannels", required=False),
     )
+
+    @staticmethod
+    def convert_queryset(client, data, field, key):
+        result_models = []
+        for item in data.get(key):
+
+            model = Category(options={"client": client()})
+            if isinstance(item, Category):
+                result_models.append(item)
+            else:
+                model.map_attributes(item)
+                result_models.append(model)
+
+        return key, Queryset(Category, *result_models)

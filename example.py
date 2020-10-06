@@ -2,6 +2,7 @@ from shopwareapi.client import ShopwareClient
 from shopwareapi.models.price import Price
 from shopwareapi.models.product import Product
 from shopwareapi.models.manufacturer import Manufacturer
+from shopwareapi.models.category import Category
 import sys
 import uuid
 import logging
@@ -27,6 +28,23 @@ price = Price(** {
          }
 )
 
+cat1 = Category(
+    name="testcat1",
+    options={"client": s}
+).controller.get_or_create(options={"identifierName": "name"})
+
+cat2 = Category(
+    name="testcat2",
+    options={"client": s}
+).controller.get_or_create(options={"identifierName": "name"})
+
+cat3 = Category(
+    name="testcat3",
+    options={"client": s}
+).controller.get_or_create(options={"identifierName": "name"})
+
+categories = [cat1, cat2, cat3]
+
 Manufacturer(
     name="Aircraft",
     options={"client": s}
@@ -38,6 +56,7 @@ create_product = Product(
     name="asdfsdfadfdfgsgfhsghfgfgffgd",
     productNumber="89fe4b60-a9e5-455e-b2cc-8d8f6cacbca3",
     manufacturer=test_manufacturer,
+    categories=categories,
     stock=10,
     tax=tax,
     price=[price],
