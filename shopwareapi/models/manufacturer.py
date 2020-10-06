@@ -1,7 +1,6 @@
 from shopwareapi.core.basefield import BaseField
 from shopwareapi.core.basemodel import BaseModel
 from shopwareapi.controller.manufacturer import ManufacturerController
-from shopwareapi.utils.converter import Convert
 
 
 class Manufacturer(BaseModel):
