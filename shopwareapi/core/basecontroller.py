@@ -41,8 +41,16 @@ class BaseController:
             response = self.get_client().post(request_url, data)
         except json.decoder.JSONDecodeError:
             pass
-        res = self.find(self.model.productNumber, matches_field="productNumber")
-        return res.first()
+
+        if "options" in kwargs:
+            options = kwargs.get("options")
+
+            if "identifierName" in options:
+                id_name = options.get("identifierName")
+                res = self.find(getattr(self.model, id_name), matches_field=id_name)
+                return res.first()
+
+        return True
 
     def find(self, term, matches_field=None):
         """
