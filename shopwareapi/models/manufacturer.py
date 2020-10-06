@@ -1,11 +1,11 @@
 from shopwareapi.core.basefield import BaseField
 from shopwareapi.core.basemodel import BaseModel
-from shopwareapi.controller.manufacturer import ProductManufacturerController
+from shopwareapi.controller.manufacturer import ManufacturerController
 from shopwareapi.utils.converter import Convert
 
 
-class ProductManufacturer(BaseModel):
-    CONTROLLER_CLASS = ProductManufacturerController
+class Manufacturer(BaseModel):
+    CONTROLLER_CLASS = ManufacturerController
 
     FIELDS = (
         BaseField("id", "id", required=False),
@@ -16,8 +16,8 @@ class ProductManufacturer(BaseModel):
     def convert(client, data, field, key):
         manufacturer = data.get(key)
 
-        if isinstance(manufacturer, ProductManufacturer):
+        if isinstance(manufacturer, Manufacturer):
             return "manufacturer", manufacturer
         elif key == "manufacturerId":
-            model = client().controller.ProductManufacturerController.get(manufacturer)
+            model = client().controller.ManufacturerController.get(manufacturer)
             return "manufacturer", model
