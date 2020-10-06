@@ -17,7 +17,7 @@ class Product(BaseModel):
     BaseField("uidtId", "uidtId", required=False),
     BaseField("tax", "tax", required=False, nested=True, converter=Tax.convert),
     BaseField("taxId", "taxId", converter=Tax.convert, related_to="tax"),
-    BaseField("manufacturer", "manufacturer", required=False, converter=Manufacturer.convert),
+    BaseField("manufacturer", "manufacturer", required=False, nested=True, converter=Manufacturer.convert),
     BaseField("manufacturerId", "manufacturerId", converter=Manufacturer.convert, related_to="manufacturer"),
     BaseField("price", "price", required=False, converter=Price.convert_queryset, nested=True),
     BaseField("productNumber", "productNumber", required=False),

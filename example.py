@@ -27,18 +27,19 @@ price = Price(** {
          }
 )
 
+Manufacturer(
+    name="Aircraft",
+    options={"client": s}
+).controller.get_or_create(options={"identifierName": "name"})
+
+test_manufacturer = s.controller.Manufacturer.find("Aircraft", matches_field="name").all()[0]
+
 create_product = Product(
     name="asdfsdfadfdfgsgfhsghfgfgffgd",
     productNumber="89fe4b60-a9e5-455e-b2cc-8d8f6cacbca3",
+    manufacturer=test_manufacturer,
     stock=10,
     tax=tax,
     price=[price],
     options={"client": s}
 ).controller.get_or_create(options={"identifierName": "productNumber"})
-
-Manufacturer(
-    name="aircraft",
-    options={"client": s}
-).controller.get_or_create(options={"identifierName": "name"})
-
-a = s.controller.Manufacturer.find("aircraft", options={"identifierName": "name"})
