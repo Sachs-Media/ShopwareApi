@@ -8,7 +8,7 @@ class Manufacturer(BaseModel):
     CONTROLLER_CLASS = ManufacturerController
 
     FIELDS = (
-        BaseField("id", "id", required=False),
+        BaseField("id", "id", aliases=["manufacturerId"], required=False),
         BaseField("name", "name", required=False),
     )
 
