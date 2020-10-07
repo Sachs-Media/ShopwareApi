@@ -4,6 +4,7 @@ from shopwareapi.utils.cache import token_cache
 from shopwareapi.models import Product, Currency, Category, Tax, Manufacturer
 import json
 import logging
+from shopwareapi.utils.json_hook import ComplexEncoder
 
 log = logging.getLogger("swclient")
 
@@ -69,10 +70,11 @@ class ShopwareClient:
         return url
 
     def post(self, url, data=None, files=None, headers=None):
+        log.debug(data)
         header = self._default_header()
         if headers is not None:
             header.update(headers)
-        response = requests.post(url, data=json.dumps(data), headers=header, files=files)
+        response = requests.post(url, data=json.dumps(data, cls=ComplexEncoder), headers=header, files=files)
         return self.postprocessing(response)
 
     def get(self, url):
@@ -90,7 +92,7 @@ class ShopwareClient:
 
         if header is not None:
             header.update(header)
-        response = requests.patch(url, data=json.dumps(data), headers=header, files=files)
+        response = requests.patch(url, data=json.dumps(data, cls=ComplexEncoder), headers=header, files=files)
         return self.postprocessing(response)
 
     def postprocessing(self, response):

@@ -14,8 +14,8 @@ class Product(BaseModel):
   
   FIELDS = (
     BaseField("id", "id", required=False),
-    BaseField("categories", "categories", required=False, converter=Category.convert_queryset, nested=True),
-    BaseField("price", "price", required=False, converter=Price.convert_queryset, nested=True),
+    BaseField("categories", "categories", required=False, converter=Category.convert_queryset, related_to="self", nested=True, secondary_converter=Category.convert_id_only_from_queryset),
+    BaseField("price", "price", required=False, converter=Price.convert_queryset, related_to="self", nested=True),
     BaseField("uuid", "uuid", required=False),
     BaseField("uidtId", "uidtId", required=False),
     BaseField("tax", "tax", required=False, nested=True, converter=Tax.convert),

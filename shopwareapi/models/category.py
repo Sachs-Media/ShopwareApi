@@ -41,5 +41,4 @@ class Category(BaseModel):
             else:
                 model.map_attributes(item)
                 result_models.append(model)
-
         return key, Queryset(Category, *result_models)

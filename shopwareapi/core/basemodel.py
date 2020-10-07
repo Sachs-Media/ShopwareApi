@@ -1,5 +1,6 @@
 import shopwareapi.exception as exception
 import shopwareapi.utils.map as maputil
+from shopwareapi.utils.helper import deduplicate
 
 
 class BaseModel(maputil.AttributeMixin):
@@ -18,7 +19,21 @@ class BaseModel(maputil.AttributeMixin):
 
         self._client = self._options.get("client")
         self.map_attributes(kwargs)
-        
+
+    @classmethod
+    def find_field(cls, needle):
+        """
+            Helper method to find a "needle" in STRUCTURE.
+            This method try to match needle with field (key), one of field aliases field.apiname or field.name
+            :param needle: word/attribute which should be found in structure
+            :return:
+        """
+        for field in cls.get_fields():
+            if needle in field.aliases or \
+                    needle == field.attribute_name or \
+                    needle == field.api_name:
+                return field
+
     def get_client(self):
         if not self._client:
             raise exception.NotConnectedToClient("Please link this to ShopwareClient object. Using client.send(<thisobject>) ")
@@ -42,12 +57,13 @@ class BaseModel(maputil.AttributeMixin):
 
     def get_options(self):
         return {}
-        
-    def get_fields(self):
-        if self.__class__.FIELDS is None:
+
+    @classmethod
+    def get_fields(cls):
+        if cls.FIELDS is None:
             raise ValueError("Fields must be contains BaseField definitions")
         else:
-            return self.__class__.FIELDS
+            return cls.FIELDS
 
     def get_dict(self, data=None):
         """
@@ -65,7 +81,9 @@ class BaseModel(maputil.AttributeMixin):
                     related_fields = list(
                         filter(lambda item: item.related_to == field.attribute_name, self.get_fields())
                     )
-                    data.update(value.parent_update(data, related_fields))
+                    if field.related_to == "self":
+                        related_fields.append(field)
+                    data.update(value.parent_update(data, related_fields, self))
                 else:
                     if value is not None:
                         data[field.api_name] = value
@@ -74,11 +92,10 @@ class BaseModel(maputil.AttributeMixin):
 
         return data
 
-    def parent_update(self, data, related_fields):
+    def parent_update(self, data, related_fields, remote_obj):
         new_data = {}
         for field in related_fields:
-            local_field_list = list(
-                set(
+            local_field_list = set(
                     filter(
                         lambda item: item is not None,
                         [
@@ -90,7 +107,11 @@ class BaseModel(maputil.AttributeMixin):
                         ]
                     )
                 )
-            )
+
+            if field.related_to == "self":
+                local_field_list.add(field)
+
+            local_field_list = deduplicate(list(local_field_list))
 
             if len(local_field_list) > 1:
                 raise ValueError("Multiple fields have the same alias, apiname or name")
@@ -98,4 +119,13 @@ class BaseModel(maputil.AttributeMixin):
             local_field = local_field_list[0]
             if hasattr(self, local_field.attribute_name):
                 new_data[field.api_name] = getattr(self, local_field.attribute_name)
+                if field.secondary_converter is not None:
+                    new_data[field.api_name] = field.secondary_converter(self, field, local_field)
         return new_data
+
+    @classmethod
+    def convert_id_only_from_queryset(cls, queryset, field, local_field, *args, **kwargs):
+        result = []
+        for item in queryset:
+            result.append({"id":item.id})
+        return result
