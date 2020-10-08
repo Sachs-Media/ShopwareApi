@@ -6,6 +6,7 @@ from shopwareapi.models.price import Price
 from shopwareapi.models.tax import Tax
 from shopwareapi.models.manufacturer import Manufacturer
 from shopwareapi.models.category import Category
+from shopwareapi.models.saleschannel import SalesChannel
 
 
 class Product(BaseModel):
@@ -14,7 +15,18 @@ class Product(BaseModel):
   
   FIELDS = (
     BaseField("id", "id", required=False),
-    BaseField("categories", "categories", required=False, converter=Category.convert_queryset, related_to="self", nested=True, secondary_converter=Category.convert_id_only_from_queryset),
+    BaseField("categories", "categories",
+              required=False,
+              converter=Category.convert_queryset,
+              related_to="self",
+              nested=True,
+              secondary_converter=Category.convert_only_from_queryset("id")),
+    BaseField("visibilities", "visibilities",
+              required=False,
+              converter=SalesChannel.convert_queryset,
+              related_to="self",
+              nested=True,
+              secondary_converter=SalesChannel.convert_product_assignment),
     BaseField("price", "price", required=False, converter=Price.convert_queryset, related_to="self", nested=True),
     BaseField("uuid", "uuid", required=False),
     BaseField("uidtId", "uidtId", required=False),
@@ -44,5 +56,4 @@ class Product(BaseModel):
     BaseField("crossSelling", "crossSelling", required=False),
     BaseField("unit", "unit", required=False),
     BaseField("media", "media", required=False),
-    BaseField("visibilities", "visibilities", required=False)
   )

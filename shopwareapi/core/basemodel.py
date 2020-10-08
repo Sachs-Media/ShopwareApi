@@ -124,8 +124,10 @@ class BaseModel(maputil.AttributeMixin):
         return new_data
 
     @classmethod
-    def convert_id_only_from_queryset(cls, queryset, field, local_field, *args, **kwargs):
-        result = []
-        for item in queryset:
-            result.append({"id":item.id})
-        return result
+    def convert_only_from_queryset(cls, field_name):
+        def wrapper(queryset, field, local_field, *args, **kwargs):
+            result = []
+            for item in queryset:
+                result.append({field_name: item.id})
+            return result
+        return wrapper
