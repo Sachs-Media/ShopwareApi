@@ -9,7 +9,7 @@ class Category(BaseModel):
     CONTROLLER_CLASS = CategoryController
 
     FIELDS = (
-        BaseField("id", "id", required=False),
+        BaseField("id", "id", aliases=["categoryId"], required=False),
         BaseField("name", "name", required=False),
         BaseField("description", "description", required=False),
         BaseField("parentId", "parentId", required=False),
@@ -29,6 +29,16 @@ class Category(BaseModel):
         BaseField("footerSalesChannels", "footerSalesChannels", required=False),
         BaseField("serviceSalesChannels", "serviceSalesChannels", required=False),
     )
+
+    @staticmethod
+    def convert(client, data, field, key):
+        category = data.get(key)
+
+        if isinstance(category, Category):
+            return "category", category
+        elif key == "categoryId":
+            model = client().controller.Category.get(category)
+            return "category", model
 
     @staticmethod
     def convert_queryset(client, data, field, key):

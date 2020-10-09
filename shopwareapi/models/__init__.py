@@ -5,3 +5,4 @@ from .price import Price
 from .tax import Tax
 from .manufacturer import Manufacturer
 from .saleschannel import SalesChannel
+from .media import Media
