@@ -25,7 +25,6 @@ class Price(BaseModel):
         BaseField("currencyId", "currencyId", converter=Currency.convert, related_to="currency"),
     )
     
-
     @staticmethod
     def convert_queryset(client, data, field, key):
         result_models = []
@@ -38,4 +37,5 @@ class Price(BaseModel):
                 model.map_attributes(item)
                 result_models.append(model)
     
-        return (key, Queryset(Price, *result_models))
+        return key, Queryset(Price, *result_models)
+
