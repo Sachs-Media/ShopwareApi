@@ -20,7 +20,7 @@ class Category(BaseModel):
 
     FIELDS = (
         BaseField("id", "id", aliases=["parentId"], required=False),
-        BaseField("parentId", "parentId", required=False, converter=convert, related_to="id"),
+        BaseField("parentId", "parentId", required=False, converter=convert),
         BaseField("name", "name", required=False),
         BaseField("description", "description", required=False),
         BaseField("afterCategoryId", "afterCategoryId", required=False),

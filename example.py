@@ -20,6 +20,7 @@ cur = s.controller.Currency.find("EUR").all()[0]
 tax = s.controller.Tax.find(19.0, matches_field="taxRate").all()[0]
 sf = s.controller.SalesChannel.find("Storefront", matches_field="name").all()[0]
 hs = s.controller.SalesChannel.find("Headless", matches_field="name").all()[0]
+
 price = Price(**{
   "currency": cur,
   "gross": 150000,
