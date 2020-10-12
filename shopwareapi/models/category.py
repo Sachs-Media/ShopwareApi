@@ -19,8 +19,9 @@ class Category(BaseModel):
             return "category", model
 
     FIELDS = (
-        BaseField("id", "id", aliases=["parentId"], required=False),
+        BaseField("id", "id", aliases=["categoryId"], required=False),
         BaseField("parentId", "parentId", required=False, converter=convert),
+        BaseField("categoryId", "categoryId", converter=convert, related_to="parentId"),
         BaseField("name", "name", required=False),
         BaseField("description", "description", required=False),
         BaseField("afterCategoryId", "afterCategoryId", required=False),
