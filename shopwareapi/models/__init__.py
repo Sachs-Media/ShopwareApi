@@ -6,3 +6,4 @@ from .tax import Tax
 from .manufacturer import Manufacturer
 from .saleschannel import SalesChannel
 from .media import Media
+from .cms_page import CmsPage

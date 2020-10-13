@@ -1,7 +1,13 @@
 import requests
 import time
 from shopwareapi.utils.cache import token_cache
-from shopwareapi.models import Product, Currency, Category, Tax, Manufacturer, SalesChannel
+from shopwareapi.models import Product, \
+    Currency, \
+    Category, \
+    Tax, \
+    Manufacturer, \
+    SalesChannel, \
+    CmsPage
 import json
 import logging
 from shopwareapi.utils.json_hook import ComplexEncoder
@@ -120,3 +126,4 @@ class ShopwareClient:
             self.Tax = Tax(options={"client": client}).controller
             self.Manufacturer = Manufacturer(options={"client": client}).controller
             self.SalesChannel = SalesChannel(options={"client": client}).controller
+            self.CmsPage = CmsPage(options={"client": client}).controller
