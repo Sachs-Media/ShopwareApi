@@ -21,11 +21,6 @@ s = ShopwareClient(
 # tax = s.controller.Tax.find(19.0, matches_field="taxRate").all()[0]
 # sf = s.controller.SalesChannel.find("Storefront", matches_field="name").all()[0]
 # hs = s.controller.SalesChannel.find("Headless", matches_field="name").all()[0]
-
-cms = s.controller.CmsPage.find("Standard Kategorie-Layout mit Sidebar", matches_field="name").all()[0]
-
-print(cms)
-print(cms.get_dict())
 #
 # price = Price(**{
 #   "currency": cur,
