@@ -2,6 +2,7 @@ from shopwareapi.core.basefield import BaseField
 from shopwareapi.core.basemodel import BaseModel
 from shopwareapi.controller.category import CategoryController
 from shopwareapi.utils.queryset import Queryset
+from shopwareapi.models.cms_page import CmsPage
 
 
 class Category(BaseModel):
@@ -18,7 +19,7 @@ class Category(BaseModel):
         BaseField("mediaId", "mediaId", required=False),
         BaseField("breadcrumb", "breadcrumb", required=False),
         BaseField("level", "level", required=False),
-        BaseField("cmsPageId", "cmsPageId", required=False),
+        BaseField("cmsPageId", "cmsPageId", required=False, converter=CmsPage.convert_queryset),
         BaseField("path", "path", required=False),
         BaseField("active", "active", required=False),
         BaseField("customFields", "customFields", required=False),
