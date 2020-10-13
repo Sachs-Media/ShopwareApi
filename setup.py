@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="shopwareapi",
-    version="0.0.29",
+    version="0.0.30",
     author="Stefan Eiermann, Sachs Media",
     author_email="support@sachs-media.com",
     description="Provides a Python (object-based) API for Shopware",
