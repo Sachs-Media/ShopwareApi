@@ -18,6 +18,7 @@ class Category(BaseModel):
         BaseField("mediaId", "mediaId", required=False),
         BaseField("breadcrumb", "breadcrumb", required=False),
         BaseField("level", "level", required=False),
+        BaseField("cmsPageId", "cmsPageId", required=False),
         BaseField("path", "path", required=False),
         BaseField("active", "active", required=False),
         BaseField("customFields", "customFields", required=False),
