@@ -6,6 +6,8 @@ from shopwareapi.utils.queryset import Queryset
 from shopwareapi.models.category import Category
 from shopwareapi.models.saleschannel import SalesChannel
 from shopwareapi.models.cms_page import CmsPage
+from shopwareapi.models.media_folder import MediaFolder
+from shopwareapi.models.media_configuration import MediaConfiguration
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -21,6 +23,17 @@ s = ShopwareClient(
 # tax = s.controller.Tax.find(19.0, matches_field="taxRate").all()[0]
 # sf = s.controller.SalesChannel.find("Storefront", matches_field="name").all()[0]
 # hs = s.controller.SalesChannel.find("Headless", matches_field="name").all()[0]
+
+# product_folder = s.controller.MediaFolder.find("Product Media", matches_field="name").all()[0]
+# media_configuration = s.controller.MediaConfiguration.find(True, matches_field="createThumbnails").all()[0]
+#
+# mediafolder = MediaFolder(**{
+#   "name": "földer_öne",
+#   "configurationId": media_configuration.id,
+#   "parentId": product_folder.id,
+#   "options": {"client": s}
+# }).controller.create(options={"identifierName": "name"})
+
 #
 # price = Price(**{
 #   "currency": cur,

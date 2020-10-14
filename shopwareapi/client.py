@@ -7,6 +7,9 @@ from shopwareapi.models import Product, \
     Tax, \
     Manufacturer, \
     SalesChannel, \
+    MediaFolder, \
+    Media, \
+    MediaConfiguration, \
     CmsPage
 import json
 import logging
@@ -127,3 +130,5 @@ class ShopwareClient:
             self.Manufacturer = Manufacturer(options={"client": client}).controller
             self.SalesChannel = SalesChannel(options={"client": client}).controller
             self.CmsPage = CmsPage(options={"client": client}).controller
+            self.MediaFolder = MediaFolder(options={"client": client}).controller
+            self.MediaConfiguration = MediaConfiguration(options={"client": client}).controller

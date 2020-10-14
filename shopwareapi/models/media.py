@@ -8,5 +8,8 @@ class Media(BaseModel):
 
     FIELDS = (
         BaseField("id", "id", required=False),
+        BaseField("mediaFolderId", "mediaFolderId", required=False),
+        BaseField("fileName", "fileName", required=False),
+        BaseField("fileExtension", "fileExtension", required=False),
     )
 
