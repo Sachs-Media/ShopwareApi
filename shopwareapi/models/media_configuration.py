@@ -9,5 +9,11 @@ class MediaConfiguration(BaseModel):
     FIELDS = (
         BaseField("id", "id", required=False),
         BaseField("type", "type", required=False),
+        BaseField("createThumbnails", "createThumbnails", required=False),
+        BaseField("keepAspectRatio", "keepAspectRatio", required=False),
+        BaseField("thumbnailQuality", "thumbnailQuality", required=False),
+        BaseField("private", "private", required=False),
+        BaseField("noAssociation", "noAssociation", required=False),
+        BaseField("customFields", "customFields", required=False)
     )
 
