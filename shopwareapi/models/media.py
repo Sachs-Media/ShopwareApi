@@ -12,4 +12,3 @@ class Media(BaseModel):
         BaseField("fileName", "fileName", required=False),
         BaseField("fileExtension", "fileExtension", required=False),
     )
-

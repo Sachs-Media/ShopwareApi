@@ -8,7 +8,9 @@ from shopwareapi.models.saleschannel import SalesChannel
 from shopwareapi.models.cms_page import CmsPage
 from shopwareapi.models.media_folder import MediaFolder
 from shopwareapi.models.media_configuration import MediaConfiguration
+from shopwareapi.models.media import Media
 import logging
+import uuid
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -18,6 +20,13 @@ s = ShopwareClient(
   client_id="SWIADTVMAHVTBTY1WJZYD3V2TA",
   client_secret="eWU3MUQyZjJZQXd3ZHNMRjdSYVFhdWRQZ05IUUJxQUlDZ2VEWkk"
 )
+
+# Media(
+#   **{
+#     "options": {"client": s}
+#   }
+# ).controller.create(options={"identifierName": "name"})
+
 
 # cur = s.controller.Currency.find("EUR").all()[0]
 # tax = s.controller.Tax.find(19.0, matches_field="taxRate").all()[0]
