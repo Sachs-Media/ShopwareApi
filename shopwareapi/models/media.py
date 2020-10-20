@@ -9,7 +9,7 @@ class Media(BaseModel):
     CONTROLLER_CLASS = MediaController
 
     FIELDS = (
-        BaseField("id", "id", aliases=["mediaId"], required=False),
+        BaseField("id", "id", required=False),
         BaseField("mediaFolderId", "mediaFolderId", required=False),
         BaseField("fileName", "fileName", required=False),
         BaseField("fileExtension", "fileExtension", required=False),
