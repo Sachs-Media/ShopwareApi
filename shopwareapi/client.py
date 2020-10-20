@@ -132,3 +132,4 @@ class ShopwareClient:
             self.CmsPage = CmsPage(options={"client": client}).controller
             self.MediaFolder = MediaFolder(options={"client": client}).controller
             self.MediaConfiguration = MediaConfiguration(options={"client": client}).controller
+            self.Media = Media(options={"client": client}).controller
