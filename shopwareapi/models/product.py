@@ -5,6 +5,7 @@ from shopwareapi.controller.product import ProductController
 from shopwareapi.models.price import Price
 from shopwareapi.models.tax import Tax
 from shopwareapi.models.manufacturer import Manufacturer
+from shopwareapi.models.media import Media
 from shopwareapi.models.category import Category
 from shopwareapi.models.saleschannel import SalesChannel
 
