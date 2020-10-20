@@ -25,6 +25,8 @@ s = ShopwareClient(
 )
 
 coverimage = s.controller.Media.find("2001245", matches_field="fileName").all()[0]
+print(coverimage.id)
+
 manufacturer = s.controller.Manufacturer.find("Aircraft", matches_field="name").all()[0]
 cur = s.controller.Currency.find("EUR").all()[0]
 tax = s.controller.Tax.find(19.0, matches_field="taxRate").all()[0]
@@ -58,9 +60,7 @@ product_creation = Product(
     )),
     coverId=linkimageid,
     options={"client": s}
-)# .controller.create(options={"identifierName": "productNumber"})
+).controller.create(options={"identifierName": "productNumber"})
 
-print(json.dumps(product_creation.get_dict(), cls=ComplexEncoder))
-print("#"*20)
-print(product_creation.__dict__)
-product_creation.controller.create(options={"identifierName": "productNumber"})
+product_creation.coverId = linkimageid
+product_creation.controller.update()

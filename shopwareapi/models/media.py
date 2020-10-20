@@ -10,6 +10,7 @@ class Media(BaseModel):
 
     FIELDS = (
         BaseField("id", "id", required=False),
+        BaseField("mediaId", "mediaId", required=False),
         BaseField("mediaFolderId", "mediaFolderId", required=False),
         BaseField("fileName", "fileName", required=False),
         BaseField("fileExtension", "fileExtension", required=False),
@@ -34,5 +35,8 @@ class Media(BaseModel):
     def convert_product_assignment(queryset, field, local_field, *args, **kwargs):
         result = []
         for item in queryset:
-            result.append({"mediaId": item.id, "position": item.position})
+            a = {"mediaId": item.mediaId, "position": item.position}
+            if hasattr(item, "id"):
+                a.update({"id":item.id})
+            result.append(a)
         return result
