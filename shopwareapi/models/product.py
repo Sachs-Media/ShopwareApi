@@ -17,6 +17,13 @@ class Product(BaseModel):
     FIELDS = (
         BaseField("id", "id", required=False),
         BaseField("coverId", "coverId", required=False),
+        BaseField("media", "media",
+                  required=False,
+                  converter=Media.convert_queryset,
+                  related_to="self",
+                  nested=True,
+                  secondary_converter=Media.convert_product_assignment),
+
         BaseField("categories", "categories",
                   required=False,
                   converter=Category.convert_queryset,
@@ -36,7 +43,6 @@ class Product(BaseModel):
         BaseField("taxId", "taxId", converter=Tax.convert, related_to="tax"),
         BaseField("manufacturer", "manufacturer", required=False, nested=True, converter=Manufacturer.convert),
         BaseField("manufacturerId", "manufacturerId", converter=Manufacturer.convert, related_to="manufacturer"),
-        BaseField("media", "media", required=False, nested=True, converter=Media.convert_queryset),
         BaseField("productNumber", "productNumber", required=False),
         BaseField("stock", "stock", required=False, converter=Convert.to_int),
         BaseField("active", "active", required=False, converter=Convert.to_boolean),

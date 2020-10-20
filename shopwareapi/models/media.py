@@ -2,16 +2,18 @@ from shopwareapi.core.basefield import BaseField
 from shopwareapi.core.basemodel import BaseModel
 from shopwareapi.controller.media import MediaController
 from shopwareapi.utils.queryset import Queryset
+from shopwareapi.utils.converter import Convert
 
 
 class Media(BaseModel):
     CONTROLLER_CLASS = MediaController
 
     FIELDS = (
-        BaseField("id", "id", required=False),
+        BaseField("id", "id", aliases=["mediaId"], required=False),
         BaseField("mediaFolderId", "mediaFolderId", required=False),
         BaseField("fileName", "fileName", required=False),
         BaseField("fileExtension", "fileExtension", required=False),
+        BaseField("position", "position", converter=Convert.to_int, required=False),
     )
 
     @staticmethod
@@ -27,3 +29,10 @@ class Media(BaseModel):
                 result_models.append(model)
 
         return key, Queryset(Media, *result_models)
+
+    @staticmethod
+    def convert_product_assignment(queryset, field, local_field, *args, **kwargs):
+        result = []
+        for item in queryset:
+            result.append({"mediaId": item.id, "position": item.position})
+        return result
