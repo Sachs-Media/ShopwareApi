@@ -35,7 +35,7 @@ class Product(BaseModel):
         BaseField("taxId", "taxId", converter=Tax.convert, related_to="tax"),
         BaseField("manufacturer", "manufacturer", required=False, nested=True, converter=Manufacturer.convert),
         BaseField("manufacturerId", "manufacturerId", converter=Manufacturer.convert, related_to="manufacturer"),
-        BaseField("media", "media", required=False, converter=Media.convert_queryset),
+        BaseField("media", "media", required=False, nested=True, converter=Media.convert_queryset),
         BaseField("productNumber", "productNumber", required=False),
         BaseField("stock", "stock", required=False, converter=Convert.to_int),
         BaseField("active", "active", required=False, converter=Convert.to_boolean),
