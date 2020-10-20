@@ -16,6 +16,7 @@ class Product(BaseModel):
 
     FIELDS = (
         BaseField("id", "id", required=False),
+        BaseField("coverId", "coverId", required=False),
         BaseField("categories", "categories",
                   required=False,
                   converter=Category.convert_queryset,

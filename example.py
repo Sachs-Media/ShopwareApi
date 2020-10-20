@@ -19,3 +19,6 @@ s = ShopwareClient(
     client_id="SWIADTVMAHVTBTY1WJZYD3V2TA",
     client_secret="eWU3MUQyZjJZQXd3ZHNMRjdSYVFhdWRQZ05IUUJxQUlDZ2VEWkk"
 )
+
+image = s.controller.Media.find("2001245", matches_field="fileName").all()[0]
+print(image.id)
