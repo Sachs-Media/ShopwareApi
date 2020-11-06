@@ -17,6 +17,9 @@ class Queryset:
         for x in self._model_list:
             yield x
 
+    def __len__(self):
+        return len(self._model_list)
+
     def all(self):
         return self._model_list
 
