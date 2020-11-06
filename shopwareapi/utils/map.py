@@ -15,9 +15,7 @@ class AttributeMixin(object):
             items = data.items()
         for key, item in items:
             field = self.__class__.find_field(key)
-            if field is None:
-                log.debug("Attribute Mapping: Ignore parameter '{}'".format(key))
-            else:
+            if field is not None:
                 if data[key] is None:
                     setattr(self, key, None)
                 else:
