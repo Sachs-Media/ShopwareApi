@@ -83,7 +83,7 @@ class ShopwareClient:
         header = self._default_header()
         if headers is not None:
             header.update(headers)
-        response = requests.post(url, timeout=2, data=json.dumps(data, cls=ComplexEncoder), headers=header, files=files)
+        response = requests.post(url, timeout=5, data=json.dumps(data, cls=ComplexEncoder), headers=header, files=files)
         return self.postprocessing(response)
 
     def get(self, url):
@@ -93,7 +93,7 @@ class ShopwareClient:
         if header is not None:
             header.update(header)
         
-        response = requests.get(url, timeout=2, headers=header)
+        response = requests.get(url, timeout=5, headers=header)
         return self.postprocessing(response)
 
     def patch(self, url, data=None, files=None, headers=None):
@@ -101,7 +101,7 @@ class ShopwareClient:
 
         if header is not None:
             header.update(header)
-        response = requests.patch(url, timeout=2, data=json.dumps(data, cls=ComplexEncoder), headers=header, files=files)
+        response = requests.patch(url, timeout=5, data=json.dumps(data, cls=ComplexEncoder), headers=header, files=files)
         return self.postprocessing(response)
 
     def postprocessing(self, response):
