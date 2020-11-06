@@ -51,7 +51,7 @@ class Product(BaseModel):
         BaseField("width", "width", required=False),
         BaseField("height", "height", required=False),
         BaseField("length", "length", required=False),
-        #BaseField("categoryTree", "categoryTree", required=False),
+        BaseField("categoryTree", "categoryTree", required=False, read_only=True),
         BaseField("name", "name", required=False),
         BaseField("keywords", "keywords", required=False),
         BaseField("packUnit", "packUnit", required=False),

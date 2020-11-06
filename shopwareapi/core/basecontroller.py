@@ -4,7 +4,7 @@ from shopwareapi.core.basemodel import BaseModel
 from shopwareapi.utils.queryset import Queryset
 from shopwareapi.exception import MissingOption
 import json
-
+from shopwareapi.core.basemodel import DictMode
 
 log = logging.getLogger("shopwareapi")
 
@@ -37,7 +37,7 @@ class BaseController:
         """
         options = {}
         request_url = self.get_client().build_url(model=self.api_model)
-        data = self.model.get_dict()
+        data = self.model.get_dict(mode=DictMode.WRITE)
         if "options" in kwargs:
             options = kwargs.get("options")
             kwargs.pop("options")
@@ -116,7 +116,7 @@ class BaseController:
         if "options" in kwargs:
             kwargs.pop("options")
         request_url = self.get_client().build_url(model=self.api_model+"/"+self.model.id)
-        data = self.model.get_dict()
+        data = self.model.get_dict(mode=DictMode.WRITE)
         data.update(kwargs)
         response = self.get_client().patch(request_url, data)
 

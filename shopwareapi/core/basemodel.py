@@ -1,6 +1,12 @@
 import shopwareapi.exception as exception
 import shopwareapi.utils.map as maputil
 from shopwareapi.utils.helper import deduplicate
+import enum
+
+
+class DictMode(enum.Enum):
+    ALL = "all"
+    WRITE = "write"
 
 
 class BaseModel(maputil.AttributeMixin):
@@ -65,30 +71,48 @@ class BaseModel(maputil.AttributeMixin):
         else:
             return cls.FIELDS
 
-    def get_dict(self, data=None):
+    def get_dict(self, data=None, mode=DictMode.ALL):
         """
             Returns current Model object as dict
             :return dict: dict representation of current object
         """
-
         if data is None:
             data = dict()
         for field in self.get_fields():
-            if hasattr(self, field.attribute_name):
-                value = getattr(self, field.attribute_name)
-                if field.nested:
-                    # find fields which are related to the nested field
-                    related_fields = list(
-                        filter(lambda item: item.related_to == field.attribute_name, self.get_fields())
-                    )
-                    if field.related_to == "self":
-                        related_fields.append(field)
-                    data.update(value.parent_update(data, related_fields, self))
-                else:
-                    if value is not None:
-                        data[field.api_name] = value
-            elif field.required and not hasattr(self, field.attribute_name):
-                raise ValueError("The parameter {} is required".format(field.attribute_name))
+            if mode == DictMode.ALL:
+                if hasattr(self, field.attribute_name):
+                    value = getattr(self, field.attribute_name)
+                    if field.nested:
+                        # find fields which are related to the nested field
+                        related_fields = list(
+                            filter(lambda item: item.related_to == field.attribute_name, self.get_fields())
+                        )
+                        if field.related_to == "self":
+                            related_fields.append(field)
+                        data.update(value.parent_update(data, related_fields, self))
+                    else:
+                        if value is not None:
+                            data[field.api_name] = value
+                elif field.required and not hasattr(self, field.attribute_name):
+                    raise ValueError("The parameter {} is required".format(field.attribute_name))
+
+            elif mode == DictMode.WRITE:
+                if not field.read_only:
+                    if hasattr(self, field.attribute_name):
+                        value = getattr(self, field.attribute_name)
+                        if field.nested:
+                            # find fields which are related to the nested field
+                            related_fields = list(
+                                filter(lambda item: item.related_to == field.attribute_name, self.get_fields())
+                            )
+                            if field.related_to == "self":
+                                related_fields.append(field)
+                            data.update(value.parent_update(data, related_fields, self))
+                        else:
+                            if value is not None:
+                                data[field.api_name] = value
+                    elif field.required and not hasattr(self, field.attribute_name):
+                        raise ValueError("The parameter {} is required".format(field.attribute_name))
 
         return data
 
