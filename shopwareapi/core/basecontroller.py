@@ -6,7 +6,7 @@ from shopwareapi.exception import MissingOption
 import json
 
 
-log = logging.getLogger("basecontroller")
+log = logging.getLogger("shopwareapi")
 
 
 class BaseController:
