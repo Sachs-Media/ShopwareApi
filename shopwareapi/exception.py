@@ -22,3 +22,8 @@ class NonFilterableParameter(ValueError):
 class MissingOption(AttributeError):
     """"""
     pass
+
+
+class NotEnoughItems(AttributeError):
+    """"""
+    pass

@@ -1,5 +1,5 @@
 from shopwareapi.utils.helper import deduplicate
-
+from shopwareapi.exception import NotEnoughItems
 
 class Queryset:
 
@@ -56,3 +56,5 @@ class Queryset:
     def first(self):
         if len(self._model_list) > 0:
             return self._model_list[0]
+        else:
+            raise NotEnoughItems("couldn't find the first element")
