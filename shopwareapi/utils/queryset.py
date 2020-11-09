@@ -54,4 +54,5 @@ class Queryset:
         return new_data
 
     def first(self):
-        return self._model_list[0]
+        if len(self._model_list) > 0:
+            return self._model_list[0]
