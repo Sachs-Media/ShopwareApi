@@ -12,8 +12,11 @@ from shopwareapi.models import Product, \
     MediaConfiguration, \
     CmsPage
 import json
-import logging
 from shopwareapi.utils.json_hook import ComplexEncoder
+import logging
+from logging.config import fileConfig
+
+fileConfig('shopwareapi/logging_config.ini', disable_existing_loggers=False)
 
 log = logging.getLogger("shopwareapi")
 

@@ -6,7 +6,7 @@ from shopwareapi.exception import MissingOption
 import json
 from shopwareapi.core.basemodel import DictMode
 
-log = logging.getLogger("shopwareapi")
+log = logging.getLogger(__name__)
 
 
 class BaseController:

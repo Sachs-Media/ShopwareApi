@@ -1,6 +1,6 @@
 import logging
 
-log = logging.getLogger("shopwareapi")
+log = logging.getLogger(__name__)
 
 
 class AttributeMixin(object):
