@@ -10,7 +10,9 @@ from shopwareapi.models import Product, \
     MediaFolder, \
     Media, \
     MediaConfiguration, \
-    CmsPage
+    CmsPage, \
+    PropertyOption, \
+    PropertyGroup
 import json
 from shopwareapi.utils.json_hook import ComplexEncoder
 import logging
@@ -136,3 +138,5 @@ class ShopwareClient:
             self.MediaFolder = MediaFolder(options={"client": client}).controller
             self.MediaConfiguration = MediaConfiguration(options={"client": client}).controller
             self.Media = Media(options={"client": client}).controller
+            self.PropertyGroup = PropertyGroup(options={"client": client}).controller
+            self.PropertyOption = PropertyOption(options={"client": client}).controller
