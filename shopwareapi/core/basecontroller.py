@@ -133,3 +133,37 @@ class BaseController:
                     return result.first()
                 return self.create(**kwargs)
         raise MissingOption("Please define identifierName as option")
+
+    def update_or_create(self, **kwargs):
+        """
+            This method trys to find a object. if the object exists, an update of kwargs defaults would be performed
+            if the object doesnt exists a create will be performed
+
+            :param kwargs: must contain one parameter that identifies an object eg. productNumber=123
+                            It can also contains defaults={} defaults contain additional values which should be updated or created
+                            and options
+            :return:
+        """
+        defaults = {}
+        options = {}
+
+        if "defaults" in kwargs:
+            defaults = kwargs.pop("defaults")
+
+        if "options" in kwargs:
+            options = kwargs.pop("options")
+
+        if len(kwargs) != 1:
+            raise ValueError("kwargs must contain exactly one other argument")
+
+        ident = kwargs.items()
+        result = self.find(ident[1], matches_field=ident[0])
+        result_leng = len(result)
+        if result_leng > 1:
+            raise ValueError("Multiple object find using {}={}".format(*ident))
+        elif result_leng < 1:
+            # Perform Create
+            return self.controller.create(**kwargs, **defaults, options=options)
+        else:
+            # Perform Update
+            return self.controller.update(**kwargs, **defaults, options=options)
