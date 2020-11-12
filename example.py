@@ -10,7 +10,6 @@ from shopwareapi.models.media_folder import MediaFolder
 from shopwareapi.models.media_configuration import MediaConfiguration
 from shopwareapi.models.media import Media
 from shopwareapi.utils.json_hook import ComplexEncoder
-
 import logging
 import uuid
 import json
@@ -28,7 +27,9 @@ s = ShopwareClient(
 manufacturer = s.controller.Manufacturer.find("Aircraft", matches_field="name").all()[0]
 
 cur = s.controller.Currency.find("EUR").all()[0]
+
 tax = s.controller.Tax.find(19.0, matches_field="taxRate").all()[0]
+
 price = Price(
     **{
         "currency": cur,
@@ -38,7 +39,9 @@ price = Price(
         "options": {"client": s}
     }
 )
+
 linkimageid = uuid.uuid4().hex
+
 product_creation = Product(
     name="blubbl",
     productNumber="123455655",
