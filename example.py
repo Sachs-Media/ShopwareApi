@@ -15,19 +15,18 @@ import logging
 import uuid
 import json
 
+
 logging.basicConfig(level=logging.DEBUG)
 
 s = ShopwareClient(
-    base_url="http://janao.de",
-    version="v3",
-    client_id="SWIADTVMAHVTBTY1WJZYD3V2TA",
-    client_secret="eWU3MUQyZjJZQXd3ZHNMRjdSYVFhdWRQZ05IUUJxQUlDZ2VEWkk"
+    base_url="http://195.201.135.86",
+    version="v2",
+    client_id="SWIAA3Q0A0JMCWLZQZYWBHRTWQ",
+    client_secret="czRrMm1rbXJpMllKeWd0ZVBHRDl0cHJUT2I4NEVkck9pSVRJVGQ"
 )
 
-coverimage = s.controller.Media.find("2001245", matches_field="fileName").all()[0]
-print(coverimage.id)
-
 manufacturer = s.controller.Manufacturer.find("Aircraft", matches_field="name").all()[0]
+
 cur = s.controller.Currency.find("EUR").all()[0]
 tax = s.controller.Tax.find(19.0, matches_field="taxRate").all()[0]
 price = Price(
@@ -42,7 +41,7 @@ price = Price(
 linkimageid = uuid.uuid4().hex
 product_creation = Product(
     name="blubbl",
-    productNumber=1234567,
+    productNumber="123455655",
     stock=99,
     tax=tax,
     manufacturer=manufacturer,
@@ -51,16 +50,7 @@ product_creation = Product(
     packUnit="stk",
     purchaseUnit=1,
     description="asdf",
-    media=Queryset(Media, Media(
-        **{
-            "id": linkimageid,
-            "mediaId": coverimage.id,
-            "position": 0,
-        }
-    )),
-    coverId=linkimageid,
     options={"client": s}
-).controller.create(options={"identifierName": "productNumber"})
+).controller.get_or_create(options={"identifierName": "productNumber"})
 
-product_creation.coverId = linkimageid
-product_creation.controller.update()
+print(product_creation.get_dict())

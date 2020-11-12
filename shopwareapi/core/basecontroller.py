@@ -45,12 +45,17 @@ class BaseController:
         data.update(kwargs)
         try:
             response = self.get_client().post(request_url, data)
-        except json.decoder.JSONDecodeError:
-            pass
+            print(response)
+        except json.decoder.JSONDecodeError as e:
+            log.exception(e)
 
         if "identifierName" in options:
             id_name = options.get("identifierName")
             res = self.find(getattr(self.model, id_name), matches_field=id_name)
+            print(res )
+            print(id_name)
+            print(getattr(self.model, id_name))
+
             return res.first()
 
         return True
@@ -78,10 +83,17 @@ class BaseController:
         request_url = self.get_client().build_url(model="search/{}".format(self.api_model))
         response = self.get_client().post(request_url, search_data)
 
+        print("REQUEST URL")
+        print(request_url)
+        print("SEARCH DATA")
+        print(search_data)
+        print("FIND RESPONSE")
+        print(response)
+
+
         result_uuid = []
         for item in response["data"]:
             if item["type"] == self.api_model.replace("-", "_"):
-                
                 if matches_field is not None:
                     item_term = item["attributes"].get(matches_field)
                     if not caseSensitive:
