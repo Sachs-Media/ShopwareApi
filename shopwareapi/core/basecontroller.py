@@ -142,6 +142,9 @@ class BaseController:
         """
             This method trys to find a object. if the object exists, an update of kwargs defaults would be performed
             if the object doesnt exists a create will be performed
+            Example:
+                controller.update_or_create(productNumber=123, defaults={"manufacturer": "foobar", "name": "asdf"})
+
 
             :param kwargs: must contain one parameter that identifies an object eg. productNumber=123
                             It can also contains defaults={} defaults contain additional values which should be updated or created
@@ -160,7 +163,7 @@ class BaseController:
         if len(kwargs) != 1:
             raise ValueError("kwargs must contain exactly one other argument")
 
-        ident = kwargs.items()
+        ident = list(kwargs.items())
         result = self.find(ident[1], matches_field=ident[0])
         result_leng = len(result)
         if result_leng > 1:
