@@ -28,7 +28,6 @@ class Product(BaseModel):
                   related_to="self",
                   nested=True,
                   secondary_converter=Media.convert_product_assignment),
-
         BaseField("categories", "categories",
                   required=False,
                   converter=Category.convert_queryset,
@@ -41,7 +40,7 @@ class Product(BaseModel):
                   related_to="self",
                   nested=True,
                   secondary_converter=SalesChannel.convert_product_assignment),
-        BaseField("price", "price", required=False, converter=Price.convert_queryset, nested=True),
+        BaseField("price", "price", required=False, converter=Price.convert_queryset, related_to="self", nested=True),
         BaseField("uuid", "uuid", required=False),
         BaseField("uidtId", "uidtId", required=False),
         BaseField("tax", "tax", required=False, nested=True, converter=Tax.convert),

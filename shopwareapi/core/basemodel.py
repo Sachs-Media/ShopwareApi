@@ -98,6 +98,7 @@ class BaseModel(maputil.AttributeMixin):
 
             elif mode == DictMode.WRITE:
                 if not field.read_only:
+
                     if hasattr(self, field.attribute_name):
                         value = getattr(self, field.attribute_name)
                         if field.nested:
@@ -149,9 +150,11 @@ class BaseModel(maputil.AttributeMixin):
 
     @classmethod
     def convert_only_from_queryset(cls, field_name):
+
         def wrapper(queryset, field, local_field, *args, **kwargs):
             result = []
             for item in queryset:
                 result.append({field_name: item.id})
             return result
+
         return wrapper

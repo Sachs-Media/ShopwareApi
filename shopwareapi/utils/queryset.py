@@ -10,7 +10,7 @@ class Queryset:
         for item in args:
 
             if not isinstance(item, self._model):
-                raise ValueError("A Queryset can only contain objects from same model.")
+                raise ValueError("A Queryset can only contain objects from same model.", item)
 
         self._model_list = args
 
@@ -51,7 +51,7 @@ class Queryset:
             if hasattr(remote_obj, local_field.attribute_name):
                 new_data[field.api_name] = getattr(remote_obj, local_field.attribute_name)
                 if field.secondary_converter is not None:
-                    new_data[field.api_name] = field.secondary_converter(self, field, local_field)
+                    new_data[field.api_name] = result = field.secondary_converter(self, field, local_field)
         return new_data
 
     def first(self):

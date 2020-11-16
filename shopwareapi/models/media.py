@@ -53,8 +53,12 @@ class Media(BaseModel):
     def convert_product_assignment(queryset, field, local_field, *args, **kwargs):
         result = []
         for item in queryset:
-            a = {"mediaId": item.mediaId, "position": item.position}
-            if hasattr(item, "id"):
+            a = {"position": item.position}
+            if hasattr(item, "mediaId"):
+                a.update({"mediaId": item.mediaId})
+            elif hasattr(item, "id"):
                 a.update({"id":item.id})
+            else:
+                raise ValueError("Missing Identifier for Media Object")
             result.append(a)
         return result

@@ -44,19 +44,16 @@ class BaseController:
         if "options" in kwargs:
             options = kwargs.get("options")
             kwargs.pop("options")
-        data.update(kwargs)
 
         try:
             response = self.get_client().post(request_url, data)
-            print(response)
         except json.decoder.JSONDecodeError as e:
             log.exception(e)
 
         if "identifierName" in options:
             id_name = options.get("identifierName")
-            log.info("-#"*100)
-            log.debug(options)
-            log.debug(self.model.get_dict())
+            log.info("Create Options", options)
+            log.debug("Model: ", self.model.get_dict())
             res = self.find(getattr(self.model, id_name), matches_field=id_name)
             log.debug(res)
             return res.first()
