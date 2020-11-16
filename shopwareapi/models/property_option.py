@@ -5,6 +5,13 @@ from shopwareapi.controller.property_option import PropertyOptionController
 
 
 class PropertyOption(BaseModel):
+    """
+    model for a shopware PropertyOption
+
+    Attributes:
+        FIELDS               tuple of attributes a PropertyOption object has
+        CONTROLLER_CLASS     specifies a controller class for this model
+    """
     CONTROLLER_CLASS = PropertyOptionController
 
     FIELDS = (

@@ -5,6 +5,13 @@ from shopwareapi.controller.property_group import PropertyGroupController
 
 
 class PropertyGroup(BaseModel):
+    """
+    model for a shopware PropertyGroup
+
+    Attributes:
+        FIELDS               tuple of attributes a PropertyGroup object has
+        CONTROLLER_CLASS     specifies a controller class for this model
+    """
     CONTROLLER_CLASS = PropertyGroupController
 
     FIELDS = (

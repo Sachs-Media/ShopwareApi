@@ -5,7 +5,13 @@ from shopwareapi.utils.queryset import Queryset
 
 
 class Category(BaseModel):
+    """
+    model for a shopware Category
 
+    Attributes:
+        FIELDS               tuple of attributes a Category object has
+        CONTROLLER_CLASS     specifies a controller class for this model
+    """
     CONTROLLER_CLASS = CategoryController
 
     FIELDS = (
@@ -33,7 +39,18 @@ class Category(BaseModel):
     )
 
     @staticmethod
-    def convert_queryset(client, data, field, key):
+    def convert_queryset(client, data, key):
+        """
+        converts the data to a queryset
+
+        Parameters:
+        client:             client object to connect with a shopware api
+        data:               dictionary
+
+        Returns:
+        key, Queryset object
+
+       """
         result_models = []
 
         for item in data.get(key):

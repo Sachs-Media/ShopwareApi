@@ -83,14 +83,6 @@ class BaseController:
         request_url = self.get_client().build_url(model="search/{}".format(self.api_model))
         response = self.get_client().post(request_url, search_data)
 
-        print("REQUEST URL")
-        print(request_url)
-        print("SEARCH DATA")
-        print(search_data)
-        print("FIND RESPONSE")
-        print(response)
-
-
         result_uuid = []
         for item in response["data"]:
             if item["type"] == self.api_model.replace("-", "_"):

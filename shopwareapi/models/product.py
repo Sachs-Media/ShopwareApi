@@ -11,7 +11,13 @@ from shopwareapi.models.saleschannel import SalesChannel
 
 
 class Product(BaseModel):
+    """
+    model for a shopware Product
 
+    Attributes:
+        FIELDS               tuple of attributes a Product object has
+        CONTROLLER_CLASS     specifies a controller class for this model
+    """
     CONTROLLER_CLASS = ProductController
 
     FIELDS = (
