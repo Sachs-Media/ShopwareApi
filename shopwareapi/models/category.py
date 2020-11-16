@@ -2,6 +2,7 @@ from shopwareapi.core.basefield import BaseField
 from shopwareapi.core.basemodel import BaseModel
 from shopwareapi.controller.category import CategoryController
 from shopwareapi.utils.queryset import Queryset
+from shopwareapi.utils.converter import Convert
 
 
 class Category(BaseModel):
@@ -16,8 +17,8 @@ class Category(BaseModel):
         BaseField("description", "description", required=False),
         BaseField("afterCategoryId", "afterCategoryId", required=False),
         BaseField("mediaId", "mediaId", required=False),
-        BaseField("breadcrumb", "breadcrumb", required=False),
-        BaseField("level", "level", required=False),
+        BaseField("breadcrumb", "breadcrumb", required=False, read_only=True),
+        BaseField("level", "level", required=False, converter=Convert.to_int),
         BaseField("cmsPageId", "cmsPageId", required=False),
         BaseField("path", "path", required=False),
         BaseField("active", "active", required=False),
@@ -30,6 +31,7 @@ class Category(BaseModel):
         BaseField("navigationSalesChannels", "navigationSalesChannels", required=False),
         BaseField("footerSalesChannels", "footerSalesChannels", required=False),
         BaseField("serviceSalesChannels", "serviceSalesChannels", required=False),
+        BaseField("active", "active", required=False, converter=Convert.to_boolean),
     )
 
     @staticmethod

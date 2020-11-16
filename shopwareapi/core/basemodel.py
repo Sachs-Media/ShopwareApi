@@ -120,17 +120,17 @@ class BaseModel(maputil.AttributeMixin):
         new_data = {}
         for field in related_fields:
             local_field_list = set(
-                    filter(
-                        lambda item: item is not None,
-                        [
-                            self.find_field(field.api_name),
-                            self.find_field(field.attribute_name)
-                        ] +
-                        [
-                            self.find_field(alias) for alias in field.aliases
-                        ]
-                    )
+                filter(
+                    lambda item: item is not None,
+                    [
+                        self.find_field(field.api_name),
+                        self.find_field(field.attribute_name)
+                    ] +
+                    [
+                        self.find_field(alias) for alias in field.aliases
+                    ]
                 )
+            )
 
             if field.related_to == "self":
                 local_field_list.add(field)

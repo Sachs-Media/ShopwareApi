@@ -36,13 +36,16 @@ class BaseController:
             :return request: The orginal requests response
         """
         options = {}
+
+        self.model.map_attributes(kwargs)
         request_url = self.get_client().build_url(model=self.api_model)
         data = self.model.get_dict(mode=DictMode.WRITE)
+
         if "options" in kwargs:
             options = kwargs.get("options")
             kwargs.pop("options")
-
         data.update(kwargs)
+
         try:
             response = self.get_client().post(request_url, data)
             print(response)
@@ -51,11 +54,11 @@ class BaseController:
 
         if "identifierName" in options:
             id_name = options.get("identifierName")
+            log.info("-#"*100)
+            log.debug(options)
+            log.debug(self.model.get_dict())
             res = self.find(getattr(self.model, id_name), matches_field=id_name)
-            print(res )
-            print(id_name)
-            print(getattr(self.model, id_name))
-
+            log.debug(res)
             return res.first()
 
         return True
@@ -66,30 +69,21 @@ class BaseController:
             :param kwargs: Search Query (names defined at Model.Structure
             :return BaseModel: Model object from the found object
         """
-        
         search_data = {}
-        
         includes = ["id", "uuid"]
-        
+
         if matches_field is not None:
             includes.append(matches_field)
-        
+
         search_data = {
             "term": term,
             "includes": {
                 self.api_model: includes
             }
         }
+
         request_url = self.get_client().build_url(model="search/{}".format(self.api_model))
         response = self.get_client().post(request_url, search_data)
-
-        print("REQUEST URL")
-        print(request_url)
-        print("SEARCH DATA")
-        print(search_data)
-        print("FIND RESPONSE")
-        print(response)
-
 
         result_uuid = []
         for item in response["data"]:
@@ -103,7 +97,7 @@ class BaseController:
                         result_uuid.append(item["id"])
                 else:
                     result_uuid.append(item["id"])
-        
+
         result_list = []
         for uuid in result_uuid:
             result_list.append(self.get(uuid))
@@ -127,9 +121,12 @@ class BaseController:
     def update(self, *args, **kwargs):
         if "options" in kwargs:
             kwargs.pop("options")
+
+        self.model.map_attributes(kwargs)
+
         request_url = self.get_client().build_url(model=self.api_model+"/"+self.model.id)
         data = self.model.get_dict(mode=DictMode.WRITE)
-        data.update(kwargs)
+
         response = self.get_client().patch(request_url, data)
 
         return response
@@ -140,7 +137,15 @@ class BaseController:
 
             if "identifierName" in options:
                 id_name = options.get("identifierName")
-                result = self.find(getattr(self.model, id_name), matches_field=id_name)
+
+                if hasattr(self.model, id_name):
+                    search_value = getattr(self.model, id_name)
+                elif id_name in kwargs:
+                    search_value = kwargs.get(id_name)
+                else:
+                    raise ValueError("No value found that should be searched")
+
+                result = self.find(search_value, matches_field=id_name)
                 if len(result.all()) > 0:
                     return result.first()
                 return self.create(**kwargs)
@@ -171,14 +176,18 @@ class BaseController:
         if len(kwargs) != 1:
             raise ValueError("kwargs must contain exactly one other argument")
 
-        ident = list(kwargs.items())
+        ident = list(kwargs.items())[0]
+
         result = self.find(ident[1], matches_field=ident[0])
+        options.update({"identifierName": ident[0]})
         result_leng = len(result)
+
         if result_leng > 1:
             raise ValueError("Multiple object find using {}={}".format(*ident))
         elif result_leng < 1:
             # Perform Create
-            return self.controller.create(**kwargs, **defaults, options=options)
+            return self.create(**kwargs, **defaults, options=options)
         else:
             # Perform Update
-            return self.controller.update(**kwargs, **defaults, options=options)
+            result.first().controller.update(**kwargs, **defaults, options=options)
+            return result.first()
