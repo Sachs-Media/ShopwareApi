@@ -18,7 +18,7 @@ class BaseModel(maputil.AttributeMixin):
     def __init__(self, **kwargs):
 
         if not self.__class__.CONTROLLER_CLASS:
-            raise RuntimeError("Every model must defined a CONTROLLER; this is no fault of yours, but the fault of the libary developer ")
+            raise RuntimeError("every model must define a CONTROLLER_CLASS")
         self.controller = self.__class__.CONTROLLER_CLASS(self)
 
         self._options = kwargs.pop("options", self.get_options())

@@ -5,6 +5,13 @@ from shopwareapi.utils.converter import Convert
 
 
 class Currency(BaseModel):
+    """
+    model for a shopware Currency
+
+    Attributes:
+        FIELDS               tuple of attributes a Currency object has
+        CONTROLLER_CLASS     specifies a controller class for this model
+    """
     CONTROLLER_CLASS = CurrencyController
 
     FIELDS = (
@@ -24,6 +31,17 @@ class Currency(BaseModel):
 
     @staticmethod
     def convert(client, data, field, key):
+        """
+        converts the data to a queryset
+
+        Parameters:
+        client:             client object to connect with a shopware api
+        data:               dictionary
+
+        Returns:
+        key, Queryset object
+
+       """
         currency = data.get(key)
 
         if isinstance(currency, Currency):

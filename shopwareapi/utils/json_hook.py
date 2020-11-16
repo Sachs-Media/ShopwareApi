@@ -3,6 +3,9 @@ import json
 
 
 class ComplexEncoder(json.JSONEncoder):
+    """
+    Encoder for json.dumps()
+    """
     def default(self, obj):
         if isinstance(obj, Queryset):
             result = []

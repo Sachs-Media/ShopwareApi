@@ -1,6 +1,7 @@
 from shopwareapi.utils.helper import deduplicate
 from shopwareapi.exception import NotEnoughItems
 
+
 class Queryset:
 
     def __init__(self, model, *args):

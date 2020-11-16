@@ -4,6 +4,13 @@ from shopwareapi.controller.media_configuration import MediaConfigurationControl
 
 
 class MediaConfiguration(BaseModel):
+    """
+    model for a shopware MediaConfiguration
+
+    Attributes:
+        FIELDS               tuple of attributes a MediaConfiguration object has
+        CONTROLLER_CLASS     specifies a controller class for this model
+    """
     CONTROLLER_CLASS = MediaConfigurationController
 
     FIELDS = (
