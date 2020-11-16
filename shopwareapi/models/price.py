@@ -33,7 +33,7 @@ class Price(BaseModel):
     )
     
     @staticmethod
-    def convert_queryset(client, data, key):
+    def convert_queryset(client, data, field, key):
         """
         converts the data to a queryset
 

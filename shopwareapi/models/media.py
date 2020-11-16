@@ -25,7 +25,7 @@ class Media(BaseModel):
     )
 
     @staticmethod
-    def convert_queryset(client, data, key):
+    def convert_queryset(client, data, field, key):
         """
         converts the data to a queryset
 
@@ -43,7 +43,7 @@ class Media(BaseModel):
             model = Media(options={"client": client()})
             if isinstance(item, Media):
                 result_models.append(item)
-            else:
+            elif item is not None:
                 model.map_attributes(item)
                 result_models.append(model)
 

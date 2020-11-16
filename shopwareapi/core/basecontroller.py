@@ -27,7 +27,7 @@ class BaseController:
                 "Please link this to ShopwareClient object. Using client.send(<thisobject>)")
         return self.model.get_client()
 
-    def create(self, *args, **kwargs):
+    def create(self, **kwargs):
         """
             Creates a new Object at API
             by default it uses the linked model for informations.
