@@ -1,6 +1,7 @@
 from shopwareapi.core.basefield import BaseField
 from shopwareapi.core.basemodel import BaseModel
 from shopwareapi.controller.media_folder import MediaFolderController
+from shopwareapi.models.media import Media
 
 
 class MediaFolder(BaseModel):
@@ -17,6 +18,7 @@ class MediaFolder(BaseModel):
         BaseField("id", "id", required=False),
         BaseField("name", "name", required=False),
         BaseField("parentId", "parentId", required=False),
+        BaseField("media", "media", related_to="self", nested=True, converter=Media.convert),
         BaseField("configurationId", "configurationId", required=False),
     )
 

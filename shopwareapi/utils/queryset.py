@@ -4,6 +4,10 @@ from shopwareapi.exception import NotEnoughItems
 
 class Queryset:
 
+    def __str__(self):
+        return "<Queryset {} >".format(self._model_list)
+
+
     def __init__(self, model, *args):
         self._model = model
 

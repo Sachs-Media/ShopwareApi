@@ -3,7 +3,16 @@ from shopwareapi.utils.converter import Convert
 
 class BaseField:
 
-    def __init__(self, attribute_name=None, api_name=None, aliases=None, converter=None, required=False, nested=False, related_to=None, secondary_converter=None, read_only=False):
+    def __init__(self, attribute_name=None,
+                 api_name=None,
+                 aliases=None,
+                 converter=None,
+                 required=False,
+                 nested=False,
+                 related_to=None,
+                 secondary_converter=None,
+                 read_only=False
+                 ):
         if aliases is None:
             aliases = []
         if converter is None:

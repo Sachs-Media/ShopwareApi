@@ -3,6 +3,7 @@ from shopwareapi.core.basemodel import BaseModel
 from shopwareapi.controller.media import MediaController
 from shopwareapi.utils.queryset import Queryset
 from shopwareapi.utils.converter import Convert
+from shopwareapi.models.custom_field import CustomField
 
 
 class Media(BaseModel):
@@ -16,49 +17,23 @@ class Media(BaseModel):
     CONTROLLER_CLASS = MediaController
 
     FIELDS = (
-        BaseField("id", "id", required=False),
-        BaseField("mediaId", "mediaId", required=False),
+        BaseField("id", "id", aliases=["mediaId"], required=False),
         BaseField("mediaFolderId", "mediaFolderId", required=False),
-        BaseField("fileName", "fileName", required=False),
-        BaseField("fileExtension", "fileExtension", required=False),
+        BaseField("fileName", "fileName", read_only=True, required=False),
+        BaseField("fileExtension", "fileExtension", read_only=True, required=False),
+        BaseField("customFields", "customFields", converter=Convert.to_dict, required=False),
+        BaseField("hasFile", "hasFile", read_only=True, converter=Convert.to_boolean, required=False),
         BaseField("position", "position", converter=Convert.to_int, required=False),
+        BaseField("translations", "translations", read_only=True),
     )
 
     @staticmethod
-    def convert_queryset(client, data, field, key):
-        """
-        converts the data to a queryset
-
-        Parameters:
-        client:             client object to connect with a shopware api
-        data:               dictionary
-
-        Returns:
-        key, Queryset object
-
-       """
-        result_models = []
-        for item in data.get(key):
-
-            model = Media(options={"client": client()})
-            if isinstance(item, Media):
-                result_models.append(item)
-            elif item is not None:
-                model.map_attributes(item)
-                result_models.append(model)
-
-        return key, Queryset(Media, *result_models)
-
-    @staticmethod
-    def convert_product_assignment(queryset, field, local_field, *args, **kwargs):
-        result = []
-        for item in queryset:
-            a = {"position": item.position}
-            if hasattr(item, "mediaId"):
-                a.update({"mediaId": item.mediaId})
-            elif hasattr(item, "id"):
-                a.update({"id":item.id})
-            else:
-                raise ValueError("Missing Identifier for Media Object")
-            result.append(a)
-        return result
+    def convert(client, data, field, key):
+        media = data.get(key)
+        print("-"*100)
+        print(media)
+        if isinstance(media, Media):
+            return "media", media
+        elif key == "mediaId":
+            model = client().controller.Media.get(media)
+            return "media", model

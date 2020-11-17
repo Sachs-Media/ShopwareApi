@@ -12,13 +12,15 @@ from shopwareapi.models import Product, \
     MediaConfiguration, \
     CmsPage, \
     PropertyOption, \
-    PropertyGroup
+    PropertyGroup, \
+    CustomFieldSet, \
+    MediaRelation
 import json
 from shopwareapi.utils.json_hook import ComplexEncoder
 import logging
 from logging.config import fileConfig
 
-fileConfig('shopwareapi/logging_config.ini', disable_existing_loggers=False)
+# fileConfig('shopwareapi/logging_config.ini', disable_existing_loggers=False)
 
 log = logging.getLogger("shopwareapi")
 
@@ -74,12 +76,13 @@ class ShopwareClient:
         if type(model) in [list, tuple]:
             model = "/".join(model)
 
-        query = "?"
+        query = ""
+        query_parameter_list = []
         for key, value in kwargs.items():
-            query += "{}={}&".format(key, value)
-        if query == "?":
-            query = ""
+            query_parameter_list.append("{}={}".format(key, value))
 
+        if len(query_parameter_list) > 0:
+            query = "?{}".format("&".join(query_parameter_list))
         url = "{base_url}/api/{version}{model}{query}".format(base_url=base_url, version=version, model=model, query=query)
         return url
 
@@ -88,7 +91,7 @@ class ShopwareClient:
         header = self._default_header()
         if headers is not None:
             header.update(headers)
-        response = requests.post(url, timeout=15, data=json.dumps(data, cls=ComplexEncoder), headers=header, files=files)
+        response = requests.post(url, timeout=30, data=json.dumps(data, cls=ComplexEncoder), headers=header, files=files)
         return self.postprocessing(response)
 
     def get(self, url):
@@ -98,7 +101,7 @@ class ShopwareClient:
         if header is not None:
             header.update(header)
         
-        response = requests.get(url, timeout=15, headers=header)
+        response = requests.get(url, timeout=30, headers=header)
         return self.postprocessing(response)
 
     def patch(self, url, data=None, files=None, headers=None):
@@ -106,7 +109,7 @@ class ShopwareClient:
 
         if header is not None:
             header.update(header)
-        response = requests.patch(url, timeout=15, data=json.dumps(data, cls=ComplexEncoder), headers=header, files=files)
+        response = requests.patch(url, timeout=30, data=json.dumps(data, cls=ComplexEncoder), headers=header, files=files)
         return self.postprocessing(response)
 
     def postprocessing(self, response):
@@ -140,3 +143,5 @@ class ShopwareClient:
             self.Media = Media(options={"client": client}).controller
             self.PropertyGroup = PropertyGroup(options={"client": client}).controller
             self.PropertyOption = PropertyOption(options={"client": client}).controller
+            self.CustomFieldSet = CustomFieldSet(options={"client": client}).controller
+            self.MediaRelation = MediaRelation(options={"client": client}).controller

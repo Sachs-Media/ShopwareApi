@@ -60,10 +60,15 @@ class BaseController:
 
         return True
 
-    def find(self, term, matches_field=None, caseSensitive=True, **kwargs):
+    def find(self, term, matches_field=None, case_sensitive=True, related_name=None, **kwargs):
         """
             Find a Object which matches by given kwargs
-            :param kwargs: Search Query (names defined at Model.Structure
+
+            :param term: Term which should be searched
+            :param matches_field: Defines detailed which field must be matched to term for positive result
+            :param case_sensitive: enables/disables caseSensetive Mode for matches
+            :param request_url: allowes to set an individual Request URL
+            :param related_name: Allows to search in related Informations. related_name defines the name of sub, objects
             :return BaseModel: Model object from the found object
         """
         search_data = {}
@@ -78,16 +83,28 @@ class BaseController:
                 self.api_model: includes
             }
         }
-
+        related_controller = self
         request_url = self.get_client().build_url(model="search/{}".format(self.api_model))
+        if related_name is not None:
+            request_url = self.get_client().build_url(model="search/{}/{}/{}".format(self.api_model, self.model.id, related_name))
+            for attribute_name, controllerobj in vars(self.get_client().controller).items():
+                if isinstance(controllerobj, BaseController):
+                    if controllerobj.api_model == related_name:
+                        related_controller = controllerobj
+
+
+
+        print(request_url)
+
         response = self.get_client().post(request_url, search_data)
 
         result_uuid = []
         for item in response["data"]:
-            if item["type"] == self.api_model.replace("-", "_"):
+
+            if item["type"] in [self.api_model.replace("-", "_"), related_name]:
                 if matches_field is not None:
                     item_term = item["attributes"].get(matches_field)
-                    if not caseSensitive:
+                    if not case_sensitive:
                         item_term = str(item_term).lower().strip()
                         term = str(term).lower().strip()
                     if item_term == term:
@@ -96,9 +113,11 @@ class BaseController:
                     result_uuid.append(item["id"])
 
         result_list = []
+
         for uuid in result_uuid:
-            result_list.append(self.get(uuid))
-        return Queryset(self.model.__class__, *result_list)
+            result_list.append(related_controller.get(uuid))
+
+        return Queryset(related_controller.model.__class__, *result_list)
         
     def get(self, uuid, **kwargs):
         """
@@ -120,7 +139,7 @@ class BaseController:
             kwargs.pop("options")
 
         self.model.map_attributes(kwargs)
-
+        print(self.model.get_dict())
         request_url = self.get_client().build_url(model=self.api_model+"/"+self.model.id)
         data = self.model.get_dict(mode=DictMode.WRITE)
 
@@ -129,6 +148,7 @@ class BaseController:
         return response
 
     def get_or_create(self, **kwargs):
+
         if "options" in kwargs:
             options = kwargs.get("options")
 
@@ -143,6 +163,7 @@ class BaseController:
                     raise ValueError("No value found that should be searched")
 
                 result = self.find(search_value, matches_field=id_name)
+
                 if len(result.all()) > 0:
                     return result.first()
                 return self.create(**kwargs)
@@ -176,8 +197,11 @@ class BaseController:
         ident = list(kwargs.items())[0]
 
         result = self.find(ident[1], matches_field=ident[0])
+
         options.update({"identifierName": ident[0]})
         result_leng = len(result)
+
+        print(result)
 
         if result_leng > 1:
             raise ValueError("Multiple object find using {}={}".format(*ident))

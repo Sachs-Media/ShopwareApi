@@ -11,3 +11,7 @@ from .media_folder import MediaFolder
 from .cms_page import CmsPage
 from .property_group import PropertyGroup
 from .property_option import PropertyOption
+from .custom_field_set import CustomFieldSet
+from .custom_field import CustomField
+from .custom_field_set_relation import CustomFieldSetRelation
+from .media_relation import MediaRelation

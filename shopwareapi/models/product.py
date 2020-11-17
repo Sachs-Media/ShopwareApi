@@ -5,7 +5,7 @@ from shopwareapi.controller.product import ProductController
 from shopwareapi.models.price import Price
 from shopwareapi.models.tax import Tax
 from shopwareapi.models.manufacturer import Manufacturer
-from shopwareapi.models.media import Media
+from shopwareapi.models.media_relation import MediaRelation
 from shopwareapi.models.category import Category
 from shopwareapi.models.saleschannel import SalesChannel
 
@@ -24,10 +24,9 @@ class Product(BaseModel):
         BaseField("coverId", "coverId", required=False),
         BaseField("media", "media",
                   required=False,
-                  converter=Media.convert_queryset,
+                  converter=MediaRelation.convert_queryset,
                   related_to="self",
-                  nested=True,
-                  secondary_converter=Media.convert_product_assignment),
+                  nested=True),
         BaseField("categories", "categories",
                   required=False,
                   converter=Category.convert_queryset,

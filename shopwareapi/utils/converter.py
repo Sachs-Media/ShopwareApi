@@ -34,3 +34,11 @@ class Convert:
             :return:
         """
         return field.attribute_name, bool(data[key])
+
+    @staticmethod
+    def to_dict(client, data, field, key):
+        """
+            Converts input value to boolean
+            :return:
+        """
+        return field.attribute_name, dict(data[key])

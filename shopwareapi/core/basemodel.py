@@ -80,6 +80,7 @@ class BaseModel(maputil.AttributeMixin):
             data = dict()
         for field in self.get_fields():
             if mode == DictMode.ALL:
+
                 if hasattr(self, field.attribute_name):
                     value = getattr(self, field.attribute_name)
                     if field.nested:
@@ -89,7 +90,8 @@ class BaseModel(maputil.AttributeMixin):
                         )
                         if field.related_to == "self":
                             related_fields.append(field)
-                        data.update(value.parent_update(data, related_fields, self))
+                        if value is not None:
+                            data.update(value.parent_update(data, related_fields, self))
                     else:
                         if value is not None:
                             data[field.api_name] = value
@@ -149,12 +151,13 @@ class BaseModel(maputil.AttributeMixin):
         return new_data
 
     @classmethod
-    def convert_only_from_queryset(cls, field_name):
+    def convert_only_from_queryset(cls, *field_name_list):
 
         def wrapper(queryset, field, local_field, *args, **kwargs):
             result = []
             for item in queryset:
-                result.append({field_name: item.id})
+                for name in field_name_list:
+                    result.append({name: getattr(item, name)})
             return result
 
         return wrapper

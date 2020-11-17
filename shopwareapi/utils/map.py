@@ -9,12 +9,16 @@ class AttributeMixin(object):
     """
 
     def map_attributes(self, data):
+
         if type(data) == list:
             items = data
         else:
             items = data.items()
+
         for key, item in items:
+
             field = self.__class__.find_field(key)
+
             if field is not None:
                 if data[key] is None:
                     setattr(self, key, None)
