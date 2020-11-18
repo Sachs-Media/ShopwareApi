@@ -1,25 +1,6 @@
 shopwareapi
 ===================
 
-shopwareapi.client module
--------------------------
-
-.. automodule:: shopwareapi.client
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-shopwareapi.exception module
-----------------------------
-
-.. automodule:: shopwareapi.exception
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Subpackages
------------
-
 .. toctree::
    :maxdepth: 4
 
@@ -28,3 +9,20 @@ Subpackages
    shopwareapi.models
    shopwareapi.utils
 
+
+shopwareapi client
+-------------------------
+
+.. automodule:: shopwareapi.client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+shopwareapi exceptions
+----------------------------
+
+.. automodule:: shopwareapi.exception
+   :members:
+   :undoc-members:
+   :show-inheritance:
