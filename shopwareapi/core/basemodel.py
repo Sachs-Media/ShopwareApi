@@ -90,8 +90,8 @@ class BaseModel(maputil.AttributeMixin):
                         )
                         if field.related_to == "self":
                             related_fields.append(field)
-                        if value is not None:
-                            data.update(value.parent_update(data, related_fields, self))
+
+                        data.update(value.parent_update(data, related_fields, self))
                     else:
                         if value is not None:
                             data[field.api_name] = value

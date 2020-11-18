@@ -55,7 +55,7 @@ class Queryset:
             if hasattr(remote_obj, local_field.attribute_name):
                 new_data[field.api_name] = getattr(remote_obj, local_field.attribute_name)
                 if field.secondary_converter is not None:
-                    new_data[field.api_name] = result = field.secondary_converter(self, field, local_field)
+                    new_data[field.api_name] = field.secondary_converter(self, field, local_field)
         return new_data
 
     def first(self):

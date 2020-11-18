@@ -30,10 +30,10 @@ class Media(BaseModel):
     @staticmethod
     def convert(client, data, field, key):
         media = data.get(key)
-        print("-"*100)
-        print(media)
+
         if isinstance(media, Media):
             return "media", media
         elif key == "mediaId":
             model = client().controller.Media.get(media)
             return "media", model
+        return key, media
