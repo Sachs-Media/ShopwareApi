@@ -16,6 +16,7 @@ class Manufacturer(BaseModel):
     FIELDS = (
         BaseField("id", "id", aliases=["manufacturerId"], required=False),
         BaseField("name", "name", required=False),
+        BaseField("mediaId", "mediaId", required=False),
     )
 
     @staticmethod

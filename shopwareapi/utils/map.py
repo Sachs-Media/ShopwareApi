@@ -24,4 +24,5 @@ class AttributeMixin(object):
                     setattr(self, key, None)
                 else:
                     converted_information = field.converter(self.get_client, data, field, key)
-                    setattr(self, *converted_information)
+                    if converted_information is not None:
+                        setattr(self, *converted_information)
