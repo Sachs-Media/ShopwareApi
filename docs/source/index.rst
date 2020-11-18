@@ -1,20 +1,30 @@
-.. ShopwareApi documentation master file, created by
-   sphinx-quickstart on Mon Sep  7 14:51:33 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+shopwareapi
+===================
 
-Welcome to ShopwareApi's documentation!
-=======================================
+shopwareapi.client module
+-------------------------
+
+.. automodule:: shopwareapi.client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+shopwareapi.exception module
+----------------------------
+
+.. automodule:: shopwareapi.exception
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 4
 
+   shopwareapi.controller
+   shopwareapi.core
+   shopwareapi.models
+   shopwareapi.utils
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
