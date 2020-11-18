@@ -64,7 +64,7 @@ class Product(BaseModel):
         BaseField("mainCategories", "mainCategories", required=False),
         BaseField("tags", "tags", required=False),
         BaseField("description", "description", required=False),
-        BaseField("customFields", "customFields", required=False),
+        BaseField("customFields", "customFields", required=False, converter=Convert.to_dict),
         BaseField("crossSelling", "crossSelling", required=False),
         BaseField("unit", "unit", required=False),
     )
