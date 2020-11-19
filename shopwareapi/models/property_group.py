@@ -6,7 +6,7 @@ from shopwareapi.models.property_option import PropertyOption
 from shopwareapi.utils.queryset import Queryset
 from shopwareapi.utils.converter import Convert
 
-
+ 
 class PropertyGroup(BaseModel):
     """
     model for a shopware PropertyGroup
