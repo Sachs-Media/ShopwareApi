@@ -1,8 +1,7 @@
 from unittest import TestCase
-from shopwareapi.utils.conf import DefaultConfiguration, Configuration
+
 from shopwareapi.exceptions import ConfigurationError, FronzenConfigurationError
-import copy
-import logging
+from shopwareapi.utils.conf import DefaultConfiguration, Configuration
 
 
 class UtilsConfigurationTestCase(TestCase):
@@ -62,7 +61,7 @@ class UtilsConfigurationTestCase(TestCase):
             settings.TESTWERT_B = "hallo"
 
         with self.assertRaises(FronzenConfigurationError) as e:
-            settings.update(TESTWERT_B = "hallo")
+            settings.update(TESTWERT_B="hallo")
 
         self.assertEqual(settings.TESTWERT_A, "foobar")
         self.assertEqual(settings.TESTWERT_B, "testb")

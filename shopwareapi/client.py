@@ -20,6 +20,7 @@ class ShopwareClient(ShopwareClientHttpMixin):
         """
 
     def __init__(self, **kwargs):
+        self._authorization = None
         self._validate_configuration(kwargs)
         settings.update(**kwargs)
 
@@ -38,27 +39,27 @@ class ShopwareClient(ShopwareClientHttpMixin):
                     "The given value '{}' for parameter 'api_base_url' is invalid. (please define a protocol/scheme)".format(
                         config.get("api_base_url")))
 
-            if o.params is not None and o.params is not "":
+            if o.params is not None and o.params != "":
                 raise ConfigurationValueError(
                     "The given value '{}' for parameter 'api_base_url' is invalid. (no params are allowed)".format(
                         config.get("api_base_url")))
 
-            if o.path is not None and o.path is not "":
+            if o.path is not None and o.path != "":
                 raise ConfigurationValueError(
                     "The given value '{}' for parameter 'api_base_url' is invalid. (no path are allowed)".format(
                         config.get("api_base_url")))
 
-            if o.fragment is not None and o.fragment is not "":
+            if o.fragment is not None and o.fragment != "":
                 raise ConfigurationValueError(
                     "The given value '{}' for parameter 'api_base_url' is invalid. (no fragment are allowed)".format(
                         config.get("api_base_url")))
 
-            if o.query is not None and o.query is not "":
+            if o.query is not None and o.query != "":
                 raise ConfigurationValueError(
                     "The given value '{}' for parameter 'api_base_url' is invalid. (no query are allowed)".format(
                         config.get("api_base_url")))
 
-            if o.netloc is None or o.netloc is "":
+            if o.netloc is None or o.netloc == "":
                 raise ConfigurationValueError(
                     "The given value '{}' for parameter 'api_base_url' is invalid. (domain are required)".format(
                         config.get("api_base_url")))
