@@ -2,6 +2,7 @@
 from shopwareapi.core.basefield import BaseField
 from shopwareapi.core.basemodel import BaseModel
 from shopwareapi.controller.property_option import PropertyOptionController
+from shopwareapi.utils.queryset import Queryset
 
 
 class PropertyOption(BaseModel):
@@ -19,3 +20,30 @@ class PropertyOption(BaseModel):
         BaseField("name", "name", required=False),
         BaseField("position", "position", required=False),
     )
+
+    @staticmethod
+    def convert_queryset(client, data, field, key):
+        """
+        converts the data to a queryset
+
+        Parameters:
+        client:             client object to connect with a shopware api
+        data:               dictionary
+
+        Returns:
+        key, Queryset object
+
+       """
+        result_models = []
+
+        for item in data.get(key):
+            model = PropertyOption(options={"client": client()})
+
+            if isinstance(item, PropertyOption):
+                result_models.append(item)
+
+            else:
+                model.map_attributes(item)
+                result_models.append(model)
+
+        return key, Queryset(PropertyOption, *result_models)
