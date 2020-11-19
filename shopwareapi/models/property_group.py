@@ -6,6 +6,7 @@ from shopwareapi.models.property_option import PropertyOption
 from shopwareapi.utils.queryset import Queryset
 from shopwareapi.utils.converter import Convert
 
+
 class PropertyGroup(BaseModel):
     """
     model for a shopware PropertyGroup
@@ -17,7 +18,7 @@ class PropertyGroup(BaseModel):
     CONTROLLER_CLASS = PropertyGroupController
 
     FIELDS = (
-        BaseField("id", "id", required=False),
+        BaseField("id", "id", aliases=["propertygroupId"], required=False),
         BaseField("name", "name", required=False),
         BaseField("description", "description", required=False),
         BaseField("displayType", "displayType", required=False),
@@ -26,6 +27,16 @@ class PropertyGroup(BaseModel):
         BaseField("position", "position", required=False, converter=Convert.to_int),
         BaseField("properties", "properties", related_to=PropertyOption, required=False),
     )
+
+    @staticmethod
+    def convert(client, data, field, key):
+        propertygroup = data.get(key)
+
+        if isinstance(propertygroup, PropertyGroup):
+            return "propertygroup", propertygroup
+        elif key == "propertygroupId":
+            model = client().controller.PropertyGroup.get(propertygroup)
+            return "propertygroup", model
 
     @staticmethod
     def convert_queryset(client, data, field, key):
