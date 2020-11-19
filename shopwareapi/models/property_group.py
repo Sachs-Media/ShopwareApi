@@ -2,6 +2,7 @@
 from shopwareapi.core.basefield import BaseField
 from shopwareapi.core.basemodel import BaseModel
 from shopwareapi.controller.property_group import PropertyGroupController
+from shopwareapi.models.property_option import PropertyOption
 
 
 class PropertyGroup(BaseModel):
@@ -22,4 +23,5 @@ class PropertyGroup(BaseModel):
         BaseField("filterable", "filterable", required=False),
         BaseField("sortingType", "sortingType", required=False),
         BaseField("position", "position", required=False),
+        BaseField("options", "options", related_to=PropertyOption, required=False),
     )

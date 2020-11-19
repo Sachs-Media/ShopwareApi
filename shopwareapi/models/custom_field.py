@@ -4,6 +4,13 @@ from shopwareapi.controller.custom_field import CustomFieldController
 
 
 class CustomField(BaseModel):
+    """
+    model for a shopware CustomField
+
+    Attributes:
+        FIELDS               tuple of attributes a CustomField object has
+        CONTROLLER_CLASS     specifies a controller class for this model
+    """
     CONTROLLER_CLASS = CustomFieldController
 
     FIELDS = (

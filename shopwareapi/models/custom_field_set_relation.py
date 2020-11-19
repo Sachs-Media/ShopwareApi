@@ -5,6 +5,13 @@ from shopwareapi.core.basemodel import BaseModel
 
 
 class CustomFieldSetRelation(BaseModel):
+    """
+    model for a shopware CustomFieldSetRelation
+
+    Attributes:
+        FIELDS               tuple of attributes a CustomFieldSetRelation object has
+        CONTROLLER_CLASS     specifies a controller class for this model
+    """
     CONTROLLER_CLASS = CustomFieldSetRelationController
 
     FIELDS = (

@@ -7,7 +7,11 @@ from shopwareapi.models.custom_field import CustomField
 
 class CustomFieldSet(BaseModel):
     """
-        model for a shopware CustomField Set
+    model for a shopware CustomFieldSet
+
+    Attributes:
+        FIELDS               tuple of attributes a CustomFieldSet object has
+        CONTROLLER_CLASS     specifies a controller class for this model
     """
     CONTROLLER_CLASS = CustomFieldSetController
 
