@@ -21,5 +21,5 @@ class PropertyOption(BaseModel):
         BaseField("id", "id", required=False),
         BaseField("name", "name", required=False),
         BaseField("position", "position", required=False, converter=Convert.to_int),
-        BaseField("options", "options", related_to="self", nested=True, converter=PropertyGroup.convert),
+        BaseField("options", "options", related_to="self", converter=PropertyGroup.convert),
     )
