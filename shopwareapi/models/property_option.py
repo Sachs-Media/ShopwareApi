@@ -3,7 +3,7 @@ from shopwareapi.core.basefield import BaseField
 from shopwareapi.core.basemodel import BaseModel
 from shopwareapi.controller.property_option import PropertyOptionController
 from shopwareapi.utils.queryset import Queryset
-
+from shopwareapi.utils.converter import Convert
 
 class PropertyOption(BaseModel):
     """
@@ -18,7 +18,7 @@ class PropertyOption(BaseModel):
     FIELDS = (
         BaseField("id", "id", required=False),
         BaseField("name", "name", required=False),
-        BaseField("position", "position", required=False),
+        BaseField("position", "position", required=False, converter=Convert.to_int),
     )
 
     @staticmethod
