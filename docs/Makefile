@@ -20,4 +20,4 @@ help:
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 livehtml:
-	sphinx-autobuild -i "*~" -p 8123 -b html $(SPHINXOPTS) "$(SOURCEDIR)" "$(BUILDDIR)"
+	sphinx-autobuild --ignore "*~" --port 8123 -b html $(SPHINXOPTS) --watch ../shopwareapi/ "$(SOURCEDIR)" "$(BUILDDIR)"
