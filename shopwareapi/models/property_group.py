@@ -4,7 +4,7 @@ from shopwareapi.core.basemodel import BaseModel
 from shopwareapi.controller.property_group import PropertyGroupController
 from shopwareapi.models.property_option import PropertyOption
 from shopwareapi.utils.queryset import Queryset
-
+from shopwareapi.utils.converter import Convert
 
 class PropertyGroup(BaseModel):
     """
@@ -21,9 +21,9 @@ class PropertyGroup(BaseModel):
         BaseField("name", "name", required=False),
         BaseField("description", "description", required=False),
         BaseField("displayType", "displayType", required=False),
-        BaseField("filterable", "filterable", required=False),
+        BaseField("filterable", "filterable", required=False, converter=Convert.to_boolean),
         BaseField("sortingType", "sortingType", required=False),
-        BaseField("position", "position", required=False),
+        BaseField("position", "position", required=False, converter=Convert.to_int),
         BaseField("properties", "properties", related_to=PropertyOption, required=False),
     )
 
