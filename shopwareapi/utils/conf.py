@@ -1,5 +1,6 @@
-from shopwareapi.exceptions import ConfigurationError, FronzenConfigurationError
 import logging
+
+from shopwareapi.exceptions import ConfigurationError, FronzenConfigurationError
 
 log = logging.getLogger(__name__)
 
@@ -13,6 +14,11 @@ class DefaultConfiguration:
     #: Time span in which a new token is already requested before the old token has expired
     #: Time in minutes
     TOKEN_EXPIRE_RENEW_THRESHOLD = 60
+    API_BASE_URL = None
+    CLIENT_ID = None
+    CLIENT_SECRET = None
+    API_VERSION = None
+    REQUEST_TIMEOUT = 30
 
 
 class Configuration(object):
@@ -22,6 +28,7 @@ class Configuration(object):
     """
     defaults = DefaultConfiguration()
     _frozen = False
+
     def __init__(self, **kwargs):
         """
             Initialize Configuration object
@@ -35,8 +42,8 @@ class Configuration(object):
         default_attributes = filter(lambda item: not item.startswith("__"), dir(DefaultConfiguration))
 
         for config_name in default_attributes:
-            config_value = getattr(self.get_defaults(), config_name)
-            setattr(self, config_name, config_value)
+            config_value = getattr(self.get_defaults(), config_name.upper())
+            setattr(self, config_name.upper(), config_value)
             log.debug("set config default value for {} to {}".format(config_name, config_value))
 
         # Use custom Configuration values
@@ -74,17 +81,20 @@ class Configuration(object):
             updated_configurations = {}
             for config_name, config_value in kwargs.items():
 
-                if hasattr(self.get_defaults(), config_name):
-                    if getattr(self.get_defaults(), config_name) != config_value:
+                if hasattr(self.get_defaults(), config_name.upper()):
+                    if getattr(self, config_name.upper()) != config_value:
                         log.debug("set config value for {} to {}".format(config_name, config_value))
-                        updated_configurations[config_name] = config_value
-                        setattr(self, config_name, config_value)
+                        updated_configurations[config_name.upper()] = config_value
+                        setattr(self, config_name.upper(), config_value)
                 else:
                     raise ConfigurationError("{} isnt a configurable parameter".format(config_name))
         else:
             raise FronzenConfigurationError("The configuration settings are frozen. No changes are allowed")
 
     def freeze(self):
+        """
+            Activate freeze of Configuration object
+        """
         self._frozen = True
 
 

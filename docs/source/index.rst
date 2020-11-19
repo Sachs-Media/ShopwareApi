@@ -14,6 +14,7 @@ Current shopwareapi version: 1.0.0
    :caption: Contents:
 
    configuration
+   client
 
 
 Indices and tables

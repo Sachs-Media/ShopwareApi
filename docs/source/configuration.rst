@@ -10,6 +10,15 @@ To access the configuration, use the following code
 
     print(settings.TOKEN_EXPIRE_RENEW_THRESHOLD)
 
+All Configuration Parameters are UPPERCASE
+
+.. code-block:: python
+
+    from shopwareapi.client import ShopwareClient
+
+    client = ShopwareClient(base_url="http://localhost")
+    print(client.BASE_URL)
+
 
 .. autoclass:: shopwareapi.utils.conf.DefaultConfiguration
    :private-members:
