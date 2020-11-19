@@ -54,13 +54,13 @@ class PropertyGroup(BaseModel):
         result_models = []
 
         for item in data.get(key):
-            model = PropertyOption(options={"client": client()})
+            model = PropertyGroup(options={"client": client()})
 
-            if isinstance(item, PropertyOption):
+            if isinstance(item, PropertyGroup):
                 result_models.append(item)
 
             else:
                 model.map_attributes(item)
                 result_models.append(model)
 
-        return key, Queryset(PropertyOption, *result_models)
+        return key, Queryset(PropertyGroup, *result_models)
