@@ -2,13 +2,13 @@
 install-docs:
 	pip3 install -r docs/requirements.txt
 
-dev-install-docs:
+install-dev-docs:
 	pip3 install -r docs/requirements_dev.txt
 
 build-docs:
 	cd docs; make build html
 
-dev-build-docs:
+build-dev-docs:
 	cd docs; make livehtml
 
 test:
@@ -16,3 +16,4 @@ test:
 
 coverage:
 	coverage -m unittest
+	coverage report
