@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, PropertyMock, MagicMock
 
 from shopwareapi.client import ShopwareClient
 from shopwareapi.utils.conf import settings
@@ -78,21 +78,24 @@ class TestShopwareClientHttp(TestCase):
             self.assertEqual(kwargs["data"], "HalloWelt")
 
     def test_request_shortcuts(self):
-        with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request", Mock()) as m:
+        with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request") as m:
             m.status_code = 200
-            m.text = "asdf"
+            #m.status_code.return_value = 200
             self.client.post(url="test.dde")
             args, kwargs = m.call_args
             self.assertEqual(args[0], "post")
-        with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request", Mock(return_value=200)) as m:
+
+        with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request", Mock()) as m:
             self.client.get(url="test.dde")
             args, kwargs = m.call_args
             self.assertEqual(args[0], "get")
-        with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request", Mock(return_value=200)) as m:
+
+        with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request", Mock()) as m:
             self.client.patch(url="test.dde")
             args, kwargs = m.call_args
             self.assertEqual(args[0], "patch")
-        with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request", Mock(return_value=200)) as m:
+
+        with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request", Mock()) as m:
             self.client.delete(url="test.dde")
             args, kwargs = m.call_args
             self.assertEqual(args[0], "delete")
