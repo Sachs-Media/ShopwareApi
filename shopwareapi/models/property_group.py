@@ -1,12 +1,11 @@
-#/api/v2/search/property-group
 from shopwareapi.core.basefield import BaseField
 from shopwareapi.core.basemodel import BaseModel
 from shopwareapi.controller.property_group import PropertyGroupController
-from shopwareapi.models.property_option import PropertyOption
 from shopwareapi.utils.queryset import Queryset
 from shopwareapi.utils.converter import Convert
+from shopwareapi.models.property_option import PropertyOption
 
- 
+
 class PropertyGroup(BaseModel):
     """
     model for a shopware PropertyGroup
@@ -25,7 +24,7 @@ class PropertyGroup(BaseModel):
         BaseField("filterable", "filterable", required=False, converter=Convert.to_boolean),
         BaseField("sortingType", "sortingType", required=False),
         BaseField("position", "position", required=False, converter=Convert.to_int),
-        BaseField("properties", "properties", related_to=PropertyOption, required=False),
+        BaseField("options", "options", related_to="self", nested=True, converter=PropertyOption.convert),
     )
 
     @staticmethod
