@@ -8,4 +8,4 @@ class PropertyOptionController(BaseController):
     Attributes:
         api_model     Name of the Api model or endpoint model name.
     """
-    api_model = "property-group"
+    api_model = "property-group-option"

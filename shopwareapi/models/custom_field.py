@@ -17,6 +17,6 @@ class CustomField(BaseModel):
         BaseField("id", "id", required=False),
         BaseField("name", "name", required=False),
         BaseField("value", "value", required=False),
-        BaseField("type", "type", required = False),
+        BaseField("type", "type", required=False),
     )
 

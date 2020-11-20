@@ -10,6 +10,7 @@ from .media_configuration import MediaConfiguration
 from .media_folder import MediaFolder
 from .cms_page import CmsPage
 from .property_group import PropertyGroup
+from .property_group_relation import PropertyGroupRelation
 from .property_option import PropertyOption
 from .custom_field_set import CustomFieldSet
 from .custom_field import CustomField

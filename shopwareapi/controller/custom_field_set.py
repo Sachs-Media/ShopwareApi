@@ -4,6 +4,12 @@ from shopwareapi.models.custom_field import CustomField
 
 
 class CustomFieldSetController(BaseController):
+    """
+    controller class for a shopware custom field set
+
+    Attributes:
+        api_model     Name of the Api model or endpoint model name.
+    """
     api_model = "custom-field-set"
 
     def get_fields(self):

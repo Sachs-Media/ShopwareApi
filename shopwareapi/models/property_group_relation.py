@@ -1,18 +1,18 @@
-from shopwareapi.controller.custom_field_set_releation import CustomFieldSetRelationController
+from shopwareapi.controller.property_group_relation import PropertyGroupRelationController
 from shopwareapi.core.basefield import BaseField
 from shopwareapi.utils.queryset import Queryset
 from shopwareapi.core.basemodel import BaseModel
 
 
-class CustomFieldSetRelation(BaseModel):
+class PropertyGroupRelation(BaseModel):
     """
-    model for a shopware CustomFieldSetRelation
+    model for a shopware PropertyGroupRelation
 
     Attributes:
-        FIELDS               tuple of attributes a CustomFieldSetRelation object has
+        FIELDS               tuple of attributes a PropertyGroupRelation object has
         CONTROLLER_CLASS     specifies a controller class for this model
     """
-    CONTROLLER_CLASS = CustomFieldSetRelationController
+    CONTROLLER_CLASS = PropertyGroupRelationController
 
     FIELDS = (
         BaseField("id", "id", required=False),
@@ -35,10 +35,10 @@ class CustomFieldSetRelation(BaseModel):
         result_models = []
         for item in data.get(key):
 
-            model = CustomFieldSetRelation(options={"client": client()})
-            if isinstance(item, CustomFieldSetRelation):
+            model = PropertyGroupRelation(options={"client": client()})
+            if isinstance(item, PropertyGroupRelation):
                 result_models.append(item)
             else:
                 model.map_attributes(item)
                 result_models.append(model)
-        return key, Queryset(CustomFieldSetRelation, *result_models)
+        return key, Queryset(PropertyGroupRelation, *result_models)
