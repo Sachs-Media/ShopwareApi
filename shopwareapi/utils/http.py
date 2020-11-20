@@ -149,7 +149,7 @@ class ShopwareClientHttpMixin(object):
             :return dict: parsed packet response
         """
 
-        response = self.request("post", **kwargs)
+        response = self.request("get", **kwargs)
         return self.postprocessing(response)
 
     def patch(self, **kwargs):
@@ -161,7 +161,7 @@ class ShopwareClientHttpMixin(object):
             :param kwargs: Request Parameters described in :func:`~request`
             :return dict: parsed packet response
         """
-        response = self.request("post", **kwargs)
+        response = self.request("patch", **kwargs)
         return self.postprocessing(response)
 
     def delete(self, **kwargs):
@@ -173,7 +173,7 @@ class ShopwareClientHttpMixin(object):
             :param kwargs: Request Parameters described in :func:`~request`
             :return dict: parsed packet response
         """
-        response = self.request("post", **kwargs)
+        response = self.request("delete", **kwargs)
         return self.postprocessing(response)
 
     def postprocessing(self, response):

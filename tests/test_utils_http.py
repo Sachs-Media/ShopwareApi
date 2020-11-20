@@ -79,23 +79,25 @@ class TestShopwareClientHttp(TestCase):
 
     def test_request_shortcuts(self):
         with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request") as m:
-            m.status_code = 200
-            #m.status_code.return_value = 200
+            type(m.return_value).status_code = 200
             self.client.post(url="test.dde")
             args, kwargs = m.call_args
             self.assertEqual(args[0], "post")
 
-        with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request", Mock()) as m:
+        with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request") as m:
+            type(m.return_value).status_code = 200
             self.client.get(url="test.dde")
             args, kwargs = m.call_args
             self.assertEqual(args[0], "get")
 
-        with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request", Mock()) as m:
+        with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request") as m:
+            type(m.return_value).status_code = 200
             self.client.patch(url="test.dde")
             args, kwargs = m.call_args
             self.assertEqual(args[0], "patch")
 
-        with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request", Mock()) as m:
+        with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request") as m:
+            type(m.return_value).status_code = 200
             self.client.delete(url="test.dde")
             args, kwargs = m.call_args
             self.assertEqual(args[0], "delete")
