@@ -24,7 +24,6 @@ class PropertyGroup(BaseModel):
         BaseField("filterable", "filterable", required=False, converter=Convert.to_boolean),
         BaseField("sortingType", "sortingType", required=False),
         BaseField("position", "position", required=False, converter=Convert.to_int),
-        BaseField("options", "options", related_to="self", nested=True, converter=PropertyOption.convert),
     )
 
     @staticmethod
