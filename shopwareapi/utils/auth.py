@@ -2,6 +2,18 @@ import time
 
 
 def token_cache(func):
+    """
+        Cache decorator for Shopware HTTP-Authentification
+        This method prevents requesting a accesstoken for every request
+        the method manages the token, and fetches a new token before the expire_time has expired.
+        The length of time before the expire time can be set using XY
+
+        :param func: Orginal Function
+        :type func: function
+
+        :return str: access_token
+    """
+
     def wrapper(self, *args, **kwargs):
         if self._authorization is None or not self._authorization.get("t"):
             return func(self, *args, **kwargs)
