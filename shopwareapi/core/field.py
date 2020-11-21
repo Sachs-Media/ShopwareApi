@@ -1,7 +1,6 @@
 class NOT_PROVIDED:
     pass
 
-
 def return_None():
     return None
 
@@ -46,3 +45,13 @@ class BaseField:
 
     def to_python(self, value):
         pass
+
+    def contribute_to_class(self, cls, name, private_only=False):
+        """
+            Register the field with the model class it belongs to.
+            If private_only is True, create a separate instance of this field
+            for every subclass of cls, even if cls is not an abstract model.
+        """
+        self.name = self.name or name
+        self.model = cls
+        cls._meta.add_field(self, private=private_only)

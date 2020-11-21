@@ -6,11 +6,11 @@ class Options:
         self.meta = meta
         self.pk = None
         self.local_fields = []
+        self.local_manager = None
 
     @property
     def fields(self):
         return self.local_fields
-
 
     def contribute_to_class(self, cls, name):
         cls._meta = self
@@ -27,9 +27,8 @@ class Options:
             for field in self.fields:
                 self.setup_pk(field)
 
-    def add_manager(self, manager):
-        self.local_managers.append(manager)
-        self._expire_cache()
+    def set_manager(self, manager):
+        self.local_manager = manager
 
     def setup_pk(self, field):
         if not self.pk and field.primary_key:
