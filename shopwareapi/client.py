@@ -34,11 +34,11 @@ class ShopwareClient(ShopwareClientHttpMixin):
         if "api_base_url" in config:
             o = urlparse(config.get("api_base_url"))
 
-            if o.scheme is None:
+            if o.scheme is None or o.scheme == "":
                 raise ConfigurationValueError(
                     "The given value '{}' for parameter 'api_base_url' is invalid. (please define a protocol/scheme)".format(
                         config.get("api_base_url")))
-
+            print(o.params)
             if o.params is not None and o.params != "":
                 raise ConfigurationValueError(
                     "The given value '{}' for parameter 'api_base_url' is invalid. (no params are allowed)".format(
@@ -71,4 +71,4 @@ class ShopwareClient(ShopwareClientHttpMixin):
             if config.get("api_version") not in ["v2", "v3"]:
                 raise ConfigurationValueError(
                     "The given value '{}' for parameter 'api_version' is invalid. Allowed/supported versions are v2, v3".format(
-                        config.get("base_url")))
+                        config.get("api_version")))

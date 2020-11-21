@@ -45,8 +45,11 @@ class ShopwareClientHttpMixin(object):
             Build a url used for Request by given arguments
 
             :param base_url: Custom URL that should be requested; If None the ShopwareClient base_url attribute would be used
+            :type base_url: string
             :param version: Custom API Version which should be used; If None the ShopwareClient version attribute would be used
+            :type version: bool,null,string
             :param model: Required. Model which should be used for Request
+            :type model: list,tuple,string
             :param kwargs: Converts any kwarg to query
 
             :return str: fully prepared url

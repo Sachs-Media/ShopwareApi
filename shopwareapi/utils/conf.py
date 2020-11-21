@@ -14,10 +14,16 @@ class DefaultConfiguration:
     #: Time span in which a new token is already requested before the old token has expired
     #: Time in minutes
     TOKEN_EXPIRE_RENEW_THRESHOLD = 60
+    #: URL with protocol to the store
+    #: Only the protocol and domain is allowed (ports also) but no path/parameter/query/fragments
     API_BASE_URL = None
+    #: oAuth2 Credential. This can be created at Integrations or at salesChannel
     CLIENT_ID = None
+    #: oAuth2 Credential. This can be created at Integrations or at salesChannel
     CLIENT_SECRET = None
+    #: API version which should be used. it can be v2 or v3
     API_VERSION = None
+    #: timeout for every http api request.
     REQUEST_TIMEOUT = 30
 
 

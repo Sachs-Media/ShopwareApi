@@ -24,6 +24,8 @@ All Configuration Parameters are UPPERCASE
    :private-members:
    :members:
 
+.. _shopwareapi-utils-conf-configuration:
+
 .. autoclass:: shopwareapi.utils.conf.Configuration
    :private-members:
    :members:

@@ -1,0 +1,1 @@
+from shopwareapi.api.product.product_model import ProductModel as Product

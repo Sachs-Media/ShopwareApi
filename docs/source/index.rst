@@ -13,8 +13,10 @@ Current shopwareapi version: 1.0.0
    :maxdepth: 2
    :caption: Contents:
 
+   tests
    configuration
    client
+   utils
 
 
 Indices and tables

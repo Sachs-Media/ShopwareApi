@@ -43,7 +43,9 @@ class TestShopwareClientHttp(TestCase):
             url = self.client.build_url(test=True)
 
     def test_request(self):
-
+        """
+            Test client generic request method
+        """
         with patch("requests.request", Mock()) as m, patch("shopwareapi.utils.http.ShopwareClientHttpMixin._get_token",
                                                            Mock(return_value="asdf")):
             self.client.request("post",
@@ -78,6 +80,9 @@ class TestShopwareClientHttp(TestCase):
             self.assertEqual(kwargs["data"], "HalloWelt")
 
     def test_request_shortcuts(self):
+        """
+            Test client request shortcuts (post,get,patch,delete)
+        """
         with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request") as m:
             type(m.return_value).status_code = 200
             self.client.post(url="test.dde")
