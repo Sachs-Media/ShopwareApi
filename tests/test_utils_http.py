@@ -98,7 +98,7 @@ class TestShopwareClientHttp(TestCase):
         with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request") as m:
             type(m.return_value).status_code = 200
             self.client.patch(url="test.dde")
-            args, kwargs = m.call_args
+            args, kwargs = m.call_argsks
             self.assertEqual(args[0], "patch")
 
         with patch("shopwareapi.utils.http.ShopwareClientHttpMixin.request") as m:

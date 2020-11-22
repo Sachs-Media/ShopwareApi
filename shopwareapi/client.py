@@ -38,7 +38,7 @@ class ShopwareClient(ShopwareClientHttpMixin):
                 raise ConfigurationValueError(
                     "The given value '{}' for parameter 'api_base_url' is invalid. (please define a protocol/scheme)".format(
                         config.get("api_base_url")))
-            print(o.params)
+
             if o.params is not None and o.params != "":
                 raise ConfigurationValueError(
                     "The given value '{}' for parameter 'api_base_url' is invalid. (no params are allowed)".format(

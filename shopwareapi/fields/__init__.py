@@ -1,2 +1,2 @@
 from shopwareapi.fields.uuidfield import UUIDField
-from shopwareapi.fields.foreignkey import ForeignKey
+from shopwareapi.fields.relation_field import RelationField

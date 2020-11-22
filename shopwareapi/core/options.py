@@ -6,11 +6,15 @@ class Options:
         self.meta = meta
         self.pk = None
         self.local_fields = []
+        self.relation_fields = []
         self.local_manager = None
+        self.api_endpoint = None
+        self.api_type = None
+
 
     @property
     def fields(self):
-        return self.local_fields
+        return self.local_fields + self.relation_fields
 
     def contribute_to_class(self, cls, name):
         cls._meta = self

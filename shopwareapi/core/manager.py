@@ -10,9 +10,10 @@ class BaseManager:
         obj._constructor_args = (args, kwargs)
         return obj
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__()
         self.model = None
+        self.swapi_client = kwargs.pop("swapi_client")
         self.name = None
         self._hints = {}
 
@@ -21,7 +22,6 @@ class BaseManager:
         self.name = self.name or name
         self.model = cls
         setattr(cls, name, ManagerDescriptor(self))
-
         cls._meta.set_manager(self)
 
     @classmethod
@@ -47,20 +47,22 @@ class BaseManager:
             # Only copy missing methods.
             if hasattr(cls, name):
                 continue
+
             # Only copy public methods or methods with the attribute `queryset_only=False`.
             queryset_only = getattr(method, 'queryset_only', None)
             if queryset_only or (queryset_only is None and name.startswith('_')):
                 continue
+
             # Copy the method onto the manager.
             new_methods[name] = create_method(name, method)
         return new_methods
 
     def get_queryset(self):
         """
-        Return a new QuerySet object. Subclasses can override this method to
-        customize the behavior of the Manager.
+            Return a new QuerySet object. Subclasses can override this method to
+            customize the behavior of the Manager.
         """
-        return self._queryset_class(model=self.model)
+        return self._queryset_class(model=self.model, swapi_client=self.swapi_client)
 
     @classmethod
     def _get_queryset_methods(cls, queryset_class):
@@ -73,13 +75,16 @@ class BaseManager:
 
         new_methods = {}
         for name, method in inspect.getmembers(queryset_class, predicate=inspect.isfunction):
+
             # Only copy missing methods.
             if hasattr(cls, name):
                 continue
+
             # Only copy public methods or methods with the attribute `queryset_only=False`.
             queryset_only = getattr(method, 'queryset_only', None)
             if queryset_only or (queryset_only is None and name.startswith('_')):
                 continue
+
             # Copy the method onto the manager.
             new_methods[name] = create_method(name, method)
         return new_methods
@@ -87,7 +92,6 @@ class BaseManager:
 
 class Manager(BaseManager.from_queryset(QuerySet)):
     pass
-
 
 class ManagerDescriptor:
 
@@ -99,4 +103,3 @@ class ManagerDescriptor:
             raise AttributeError("Manager isn't accessible via %s instances" % cls.__name__)
 
         return cls._meta.local_manager
-

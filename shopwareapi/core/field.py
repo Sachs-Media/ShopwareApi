@@ -29,7 +29,7 @@ class BaseField:
 
     def get_default(self):
         """Return the default value for this field."""
-        return self._get_default()
+        return self._get_default()()
 
     def _get_default(self):
 
@@ -46,12 +46,19 @@ class BaseField:
     def to_python(self, value):
         pass
 
+    def get_attname(self):
+        return self.name
+
+    def set_attributes_from_name(self, name):
+        self.name = self.name or name
+        self.attname = self.get_attname()
+
     def contribute_to_class(self, cls, name, private_only=False):
         """
             Register the field with the model class it belongs to.
             If private_only is True, create a separate instance of this field
             for every subclass of cls, even if cls is not an abstract model.
         """
-        self.name = self.name or name
         self.model = cls
+        self.set_attributes_from_name(name)
         cls._meta.add_field(self, private=private_only)
