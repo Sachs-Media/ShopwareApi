@@ -1,3 +1,4 @@
+from shopwareapi.client import ShopwareClient
 
 DEFAULT_NAMES = [
     "api_endpoint", "api_type", "swapi_client"
@@ -12,9 +13,9 @@ class Options:
         self.local_fields = []
         self.swapi_client = None
         self.relation_fields = []
-        self.local_manager = None
-        self.api_endpoint = None
-        self.api_type = None
+        self.manager = None
+        self.api_endpoint = getattr(meta, "api_endpoint", None)
+        self.api_type = getattr(meta, "api_type", None)
         self.original_attrs = {}
 
     @property
@@ -28,9 +29,11 @@ class Options:
 
         # Next, apply any overridden values from 'class Meta'.
         if self.meta:
+
             meta_attrs = self.meta.__dict__.copy()
 
             for name in self.meta.__dict__:
+
                 # Ignore any private attributes that Django doesn't care about.
                 # NOTE: We can't modify a dictionary's contents while looping
                 # over it, so we loop over the *original* dictionary instead.
@@ -38,7 +41,6 @@ class Options:
                     del meta_attrs[name]
 
             for attr_name in DEFAULT_NAMES:
-
                 if attr_name in meta_attrs:
                     setattr(self, attr_name, meta_attrs.pop(attr_name))
                     self.original_attrs[attr_name] = getattr(self, attr_name)
@@ -59,15 +61,17 @@ class Options:
     def get_default(self):
         return None
 
-    def _prepare(self, model):
-
-        if self.pk is None:
-            for field in self.fields:
-                self.setup_pk(field)
-
     def set_manager(self, manager):
-        self.local_manager = manager
+        self.manager = manager
 
     def setup_pk(self, field):
         if not self.pk and field.primary_key:
             self.pk = field
+
+    def use(self, swapi_client: ShopwareClient):
+        if isinstance(swapi_client, ShopwareClient):
+            self.swapi_client = swapi_client
+        else:
+            ValueError("Client must be an instance of shopware.client.ShopwareClient class")
+        return self.manager
+
