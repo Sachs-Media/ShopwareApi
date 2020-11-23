@@ -1,6 +1,6 @@
 import logging
 import time
-
+import json
 import requests
 
 from shopwareapi.exceptions import ShopwareClientHttpError
@@ -34,8 +34,9 @@ class ShopwareClientHttpMixin(object):
             "client_id": settings.CLIENT_ID,
             "client_secret": settings.CLIENT_SECRET
         })
-        self._authorization = {"response": response.json(), "t": time.time()}
-        data = response.json()
+
+        data = self.postprocessing(response)
+        self._authorization = {"response": data, "t": time.time()}
         if "access_token" not in data:
             log.info(data)
         return data.get("access_token", None)
@@ -187,9 +188,17 @@ class ShopwareClientHttpMixin(object):
             :type response: :class:`requests:requests.Response`
             :return dict: Parsed Packet content
         """
-        log.debug("Response: Code: {}; Data: {}".format(response.status_code, response.text))
-        if 299 <= response.status_code >= 200:
-            raise ShopwareClientHttpError("Invalid Request response")
+        try:
+            log.debug("Response: Code: {}; Data: {}".format(response.status_code, response.text))
+            if 299 <= response.status_code >= 200:
+                error_response = response.json()
+                for error in error_response.get("errors"):
+                    log.error("{} {}".format(error.get("title"), error.get("detail")))
+                raise ShopwareClientHttpError("Shopware returns multiple errors")
 
-        if response.text != "":
-            return response.json()
+            if response.text != "":
+                return response.json()
+        except json.decoder.JSONDecodeError as e:
+            log.error("The shopware response isnt a Json")
+            log.debug(response.text)
+            raise e

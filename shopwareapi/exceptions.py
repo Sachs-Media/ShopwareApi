@@ -23,3 +23,9 @@ class ShopwareClientHttpError(RuntimeError):
     """
         Raises when statuscode is not 299 <= response.status_code >= 200
     """
+
+
+class ParameterError(KeyError):
+    """
+        Raises every time when invalid get, create, find etc. parameters are provided
+    """

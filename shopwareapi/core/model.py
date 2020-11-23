@@ -32,7 +32,7 @@ class MetaModel(type):
         new_class = super_new(cls, name, bases, new_attrs, **kwargs)
 
         # get meta class from object
-        meta = getattr(new_class, 'Meta', None)
+        meta = attr_meta or getattr(new_class, 'Meta', None)
 
         # assign Options to Object
         new_class.add_to_class('_meta', Options(meta))
@@ -72,8 +72,6 @@ class MetaModel(type):
 class Model(metaclass=MetaModel):
 
     def __init__(self, *args, **kwargs):
-        print("TEST")
-        print(self)
         for field in self._meta.fields:
             val = field.get_default()
 
