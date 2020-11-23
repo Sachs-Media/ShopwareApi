@@ -4,6 +4,7 @@ from shopwareapi.core.options import Options
 from shopwareapi.core.manager import Manager
 from shopwareapi.fields.relation_field import RelationObject
 
+
 def _has_contribute_to_class(value):
     # Only call contribute_to_class() if it's bound.
     return not inspect.isclass(value) and hasattr(value, 'contribute_to_class')
@@ -37,6 +38,7 @@ class MetaModel(type):
 
         # get meta class from object
         meta = attr_meta or getattr(new_class, 'Meta', None)
+
         # assign Options to Object
         new_class.add_to_class('_meta', Options(meta))
 
@@ -65,11 +67,8 @@ class MetaModel(type):
                 "field named 'objects'." % cls.__name__
             )
 
-        # Initialize Manager
-        use_middle_object = type("ClientUse", (), { 'use': lambda _, client: Manager(swapi_client=client) })()
-
         # Assign Manager to Object
-        cls.add_to_class('objects', use_middle_object)
+        cls.add_to_class('objects', Manager())
 
     def add_to_class(cls, name, value):
         if _has_contribute_to_class(value):
@@ -101,8 +100,8 @@ class Model(metaclass=MetaModel):
                     val = kwargs.pop(field.name)
 
             _setattr(self, field.name, val)
-
         super().__init__()
+
 
     def _get_pk_val(self, meta=None):
         meta = meta or self._meta

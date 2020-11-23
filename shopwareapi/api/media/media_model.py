@@ -6,4 +6,4 @@ class MediaModel(Model):
     id = fields.UUIDField(aliases=("productId"))
 
     class Meta:
-        api_model = "media"
+        api_endpoint = "media"

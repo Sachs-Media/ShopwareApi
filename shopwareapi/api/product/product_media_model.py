@@ -8,4 +8,4 @@ class ProductMediaModel(Model):
     media = fields.RelationField(MediaModel)
 
     class Meta:
-        api_model = "product"
+        api_endpoint = "product"

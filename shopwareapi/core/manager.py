@@ -1,4 +1,5 @@
 import inspect
+from shopwareapi.client import ShopwareClient
 from shopwareapi.core.query import QuerySet
 
 
@@ -11,18 +12,24 @@ class BaseManager:
         return obj
 
     def __init__(self, **kwargs):
-        super().__init__()
         self.model = None
-        self.swapi_client = kwargs.pop("swapi_client")
+        self.swapi_client = None
         self.name = None
         self._hints = {}
-
+        super().__init__()
 
     def contribute_to_class(self, cls, name):
         self.name = self.name or name
         self.model = cls
         setattr(cls, name, ManagerDescriptor(self))
         cls._meta.set_manager(self)
+
+    def use(self, swapi_client: ShopwareClient) -> "Manager":
+        if isinstance(swapi_client, ShopwareClient):
+            self.swapi_client = swapi_client
+        else:
+            ValueError("Client must be an instance of shopware.client.ShopwareClient class")
+        return self
 
     @classmethod
     def from_queryset(cls, queryset_class, class_name=None):
