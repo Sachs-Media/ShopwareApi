@@ -1,21 +1,21 @@
-from shopwareapi.core.query import QuerySet
-import inspect
-from shopwareapi.core.options import Options
+from shopwareapi.core.field import BaseRelationField
 from shopwareapi.core.manager import Manager
-from shopwareapi.fields.relation_field import RelationObject
-from shopwareapi.utils.helper import has_contribute_to_class
+from shopwareapi.core.options import Options
+from shopwareapi.utils.helper import has_contribute_to_class, subclass_exception
+from shopwareapi.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 
-class MetaModel(type):
+class ModelBase(type):
 
     def __new__(cls, name, bases, attrs, **kwargs):
         super_new = super().__new__
+        parents = [b for b in bases if isinstance(b, ModelBase)]
 
         # Extract module and meta
         module = attrs.pop('__module__')
         attr_meta = attrs.pop('Meta', None)
         # Create new objects attrs
-        new_attrs = {'__module__': module}
+        new_attrs = {'__module__': module, "concrete": dict()}
 
         contributable_attrs = {}
 
@@ -40,6 +40,25 @@ class MetaModel(type):
         # Assign fields to Object
         for attr_name, attr_value in contributable_attrs.items():
             new_class.add_to_class(attr_name, attr_value)
+
+        new_class.add_to_class(
+            'DoesNotExist',
+            subclass_exception(
+                'DoesNotExist',
+                tuple(
+                    x.DoesNotExist for x in parents if hasattr(x, '_meta')
+                ) or (ObjectDoesNotExist,),
+                module,
+                attached_to=new_class))
+        new_class.add_to_class(
+            'MultipleObjectsReturned',
+            subclass_exception(
+                'MultipleObjectsReturned',
+                tuple(
+                    x.MultipleObjectsReturned for x in parents if hasattr(x, '_meta')
+                ) or (MultipleObjectsReturned,),
+                module,
+                attached_to=new_class))
 
         # Initialize Object
         new_class._prepare()
@@ -69,22 +88,51 @@ class MetaModel(type):
             setattr(cls, name, value)
 
 
-class Model(metaclass=MetaModel):
+class Model(metaclass=ModelBase):
 
     def __init__(self, *args, **kwargs):
+
         for field in self._meta.fields:
             val = field.get_default()
 
             if kwargs:
-                if isinstance(field, RelationObject):
-                    pass
 
-                if field.name in kwargs:
+                if isinstance(field, BaseRelationField):
+                    related_model_class = field.get_related_model_class()
+                    print(field.name)
+                    val = related_model_class()
+
+                elif field.name in kwargs:
                     val = kwargs.pop(field.name)
 
             setattr(self, field.name, val)
+            self.concrete[field.name] = val
+
         super().__init__()
 
+    @classmethod
+    def from_api(cls, data, swapi_client):
+        new = cls(**data)
+        new._meta.use(swapi_client)
+        return new
+
+    def save(self):
+        changed_fields = self._diff_fields()
+        update_package = {
+
+        }
+        # ToDo
+        self._meta.swapi_client.post(url={
+            "models": (self._meta.api_endpoint, self._get_pk_value())
+        })
+
+    def _diff_fields(self):
+        diff_field_list = []
+        for field in self._meta.fields:
+
+            if getattr(self, field.name) != self._meta.concrete[field.name]:
+                diff_field_list.append(field)
+        return diff_field_list
 
     # def _get_pk_val(self, meta=None):
     #     meta = meta or self._meta

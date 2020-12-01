@@ -1,4 +1,5 @@
 import time
+
 from shopwareapi.utils.conf import settings
 
 
@@ -23,7 +24,8 @@ def token_cache(func):
             return func(self, *args, **kwargs)
         t = self._authorization.get("t")
 
-        if time.time() - settings.TOKEN_EXPIRE_RENEW_THRESHOLD > t + self._authorization["response"].get("expire_in", 0):
+        if time.time() - settings.TOKEN_EXPIRE_RENEW_THRESHOLD > t + self._authorization["response"].get("expire_in",
+                                                                                                         0):
             return func(self, *args, **kwargs)
         else:
             return self._authorization["response"].get("access_token")

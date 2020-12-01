@@ -1,22 +1,38 @@
 import inspect
+
 from shopwareapi.core.query import QuerySet
 
 
 class BaseManager:
+    """
+        Prepares the Manager
+    """
 
     def __new__(cls, *args, **kwargs):
-        # Capture the arguments to make returning them trivial.
+        #: Capture the arguments to make returning them trivial.
         obj = super().__new__(cls)
         obj._constructor_args = (args, kwargs)
         return obj
 
     def __init__(self, **kwargs):
+        """
+            Constructor
+            Define Initial values for some attributes
+
+            :param kwargs:
+        """
         self.model = None
         self.name = None
         self._hints = {}
         super().__init__()
 
     def contribute_to_class(self, cls, name):
+        """
+            Modifies given class, to create a relation between this class and the given
+            :param cls: "Remote" class wich should be related
+            :param name: Name of attribute name wich sholud be used in "remote/related" class to add information
+            :return:
+        """
         self.name = self.name or name
         self.model = cls
         cls._meta.set_manager(self)
@@ -33,11 +49,12 @@ class BaseManager:
 
     @classmethod
     def _get_queryset_methods(cls, queryset_class):
-        
+
         def create_method(name, method):
 
             def manager_method(self, *args, **kwargs):
                 return getattr(self.get_queryset(), name)(*args, **kwargs)
+
             manager_method.__name__ = method.__name__
             manager_method.__doc__ = method.__doc__
             return manager_method
@@ -65,7 +82,7 @@ class BaseManager:
         return self._queryset_class(model=self.model)
 
     def use(self, *args, **kwargs):
-        return self.model._meta.use(*args,**kwargs)
+        return self.model._meta.use(*args, **kwargs)
 
 
 class Manager(BaseManager.from_queryset(QuerySet)):
@@ -78,7 +95,6 @@ class ManagerDescriptor:
         self.manager = manager
 
     def __get__(self, instance, cls=None):
-
         if instance is not None:
             raise AttributeError("Manager isn't accessible via %s instances" % cls.__name__)
 

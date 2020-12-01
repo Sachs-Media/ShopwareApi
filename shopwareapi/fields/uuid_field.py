@@ -1,5 +1,6 @@
-from shopwareapi.core.field import BaseField
 import uuid
+
+from shopwareapi.core.field import BaseField
 
 
 class UUIDField(BaseField):

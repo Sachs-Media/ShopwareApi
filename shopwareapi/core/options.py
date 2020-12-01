@@ -1,4 +1,6 @@
+from shopwareapi.core.field import BaseRelationField
 from shopwareapi.client import ShopwareClient
+from shopwareapi.core.field import BaseField
 
 DEFAULT_NAMES = [
     "api_endpoint", "api_type", "swapi_client"
@@ -56,7 +58,13 @@ class Options:
         del self.meta
 
     def add_field(self, field, private=False):
-        self.local_fields.append(field)
+        self.setup_pk(field)
+        if isinstance(field, BaseRelationField):
+            self.relation_fields.append(field)
+        elif isinstance(field, BaseField):
+            self.local_fields.append(field)
+        else:
+            raise ValueError("Field must be an instance from BaseField or BaseRelationField")
 
     def get_default(self):
         return None
@@ -74,4 +82,3 @@ class Options:
         else:
             ValueError("Client must be an instance of shopware.client.ShopwareClient class")
         return self.manager
-

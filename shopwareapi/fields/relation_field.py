@@ -1,14 +1,16 @@
 from shopwareapi.core.field import BaseField
+from shopwareapi.core.field import BaseRelationField
 
 
-class RelationObject:
-    pass
+class RelationField(BaseRelationField):
+    # Single Reference to another Object
 
-class RelationField(BaseField, RelationObject):
+    def get_attname(self):
+        return "%sId" % self.model._meta.api_type
 
-    def __init__(self, relation, **kwargs):
-        self.releation = relation
-        super().__init__(**kwargs)
+
+class ManyToOneField(BaseRelationField):
+    # List of references to other Objects
 
     def get_attname(self):
         return "%sId" % self.model._meta.api_type

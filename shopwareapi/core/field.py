@@ -1,5 +1,9 @@
+import inspect
+
+
 class NOT_PROVIDED:
     pass
+
 
 def return_None():
     return None
@@ -22,6 +26,7 @@ class BaseField:
         self.choices = choices
         self.help_text = help_text
         self.validators = validators
+        super().__init__()
 
     def has_default(self):
         """Return a boolean of whether this field has a default value."""
@@ -62,3 +67,35 @@ class BaseField:
         self.model = cls
         self.set_attributes_from_name(name)
         cls._meta.add_field(self, private=private_only)
+
+
+class BaseRelationField(BaseField):
+
+    def __init__(self, to, **kwargs):
+        self.related_name = kwargs.pop("related_name", "")
+        super().__init__(**kwargs)
+        self.to = to
+        #print(inspect.getmro(self.__class__))
+        #class_lookups = [parent for parent in inspect.getmro(self.model.__class__)]
+        #print(class_lookups)
+
+        #
+        # rel = self.rel_class(
+        #     self, to,
+        #     related_name=related_name
+        # )
+
+    def get_related_model_class(self):
+        if isinstance(self.to, str) and not hasattr(self, "related_model"):
+            name = "shopwareapi.api.{}".format(self.to)
+            components = name.split(".")
+            mod = __import__(".".join(components[:-1]), fromlist=components[-1:])
+            model = getattr(mod, components[-1:][0])
+            # model.objects.use(self.model._meta.swapi_client)
+            self.related_model = model
+            return model
+
+        elif hasattr(self, "related_model"):
+            return self.related_model
+        else:
+            return self.to

@@ -1,5 +1,5 @@
-from shopwareapi.core.model import Model
 from shopwareapi import fields
+from shopwareapi.core.model import Model
 
 
 class MediaModel(Model):

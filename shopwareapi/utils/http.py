@@ -1,6 +1,7 @@
+import json
 import logging
 import time
-import json
+
 import requests
 
 from shopwareapi.exceptions import ShopwareClientHttpError
@@ -194,7 +195,10 @@ class ShopwareClientHttpMixin(object):
                 error_response = response.json()
                 for error in error_response.get("errors"):
                     log.error("{} {}".format(error.get("title"), error.get("detail")))
-                raise ShopwareClientHttpError("Shopware returns multiple errors")
+                log.debug("Request URL: %s " % response.request.url)
+                log.debug("Request TXT: %s " % response.request.body)
+                log.debug("Response TXT: %s " % response.text)
+                raise ShopwareClientHttpError("Shopware returns one or multiple errors")
 
             if response.text != "":
                 return response.json()

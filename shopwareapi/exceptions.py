@@ -29,3 +29,17 @@ class ParameterError(KeyError):
     """
         Raises every time when invalid get, create, find etc. parameters are provided
     """
+
+
+class ObjectDoesNotExist(ValueError):
+    """
+        Subexception Raises when requested data not found at remote shop
+        This exception will be attached to model class
+    """
+
+
+class MultipleObjectsReturned(ValueError):
+    """
+        Raises also as Subexception when too many objects returned for given request
+        (get() returns multiple results)
+    """
