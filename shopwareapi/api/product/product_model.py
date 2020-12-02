@@ -7,10 +7,10 @@ from shopwareapi.core.model import Model
 class ProductModel(Model):
     id = fields.UUIDField(primary_key=True, default=uuid.uuid4)
     media = fields.ManyToOneField("media.Media")
-    manufacturer = fields.RelationField("manufacturer.Manufacturer", related_name="manufacturerId")
-    unit = fields.RelationField("unit.Unit")
-    tax = fields.RelationField("tax.Tax")
-    cover = fields.RelationField("product.ProductMedia")
+    manufacturer = fields.ForeignKey("manufacturer.Manufacturer", related_name="manufacturerId")
+    unit = fields.ForeignKey("unit.Unit")
+    tax = fields.ForeignKey("tax.Tax")
+    cover = fields.ForeignKey("product.ProductMedia")
     # - price = fields.VirtualField
     productNumber = fields.CharField()
     stock = fields.IntegerField()

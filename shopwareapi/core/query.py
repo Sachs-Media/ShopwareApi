@@ -8,6 +8,9 @@ class QuerySet:
         self.filter_query = kwargs.pop("filter_query", dict())
         self._result_cache = kwargs.pop("results", None)
 
+    def __len__(self):
+        return len(self._result_cache)
+
     def get(self, *args, **kwargs):
         # print(self.model._meta.api_endpoint)
 
@@ -15,7 +18,7 @@ class QuerySet:
 
         num = len(filter_result)
         if num == 1:
-            return filter_result[0]
+            return filter_result.first()
         if not num:
             raise self.model.DoesNotExist(
                 "%s matching query does not exist." %
@@ -50,7 +53,16 @@ class QuerySet:
         results = []
         for item in result_response.get("data"):
             results.append(self.model.from_api(self._normalize_response(item), self.model._meta))
-        return self._chain(results=results)
+        return self._chain(_result_cache=results)
+
+    def first(self, *args, **kwargs):
+        return self._result_cache[0]
+
+    def create(self, **kwargs):
+        obj = self.model(**kwargs)
+        obj._meta.use(self.model._meta.swapi_client)
+        obj.create(force=True)
+        return obj
 
     def update_filter_query(self, **kwargs):
         query = self.filter_query.copy()
@@ -63,23 +75,23 @@ class QuerySet:
         includes = {}
         for related_field in self.model._meta.relation_fields:
             model = related_field.get_related_model_class()
-            print(model, related_field.name, self.model)
-            includes[model._meta.api_type] = ["id"]
+            includes[related_field.name] = ["id"]
 
         if includes:
             query.update({"includes": includes})
 
         filter = []
-        for field_name, search_value in kwargs.items():
 
-            if field_name == "pk":
-                field_name = self.model._meta.pk.name
+        for field in self.model._meta.fields:
 
-            filter.append({
-                "type": "equals",
-                "field": field_name,
-                "value": search_value
-            })
+            if field.name in kwargs:
+                search_value = kwargs.get(field.name)
+
+                filter.append({
+                    "type": "equals",
+                    "field": field.attname,
+                    "value": field.to_simple(search_value)
+                })
         if filter:
             query.update({"filter": filter})
 

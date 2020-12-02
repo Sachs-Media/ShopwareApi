@@ -72,6 +72,7 @@ class BaseManager:
 
             # Copy the method onto the manager.
             new_methods[name] = create_method(name, method)
+
         return new_methods
 
     def get_queryset(self):

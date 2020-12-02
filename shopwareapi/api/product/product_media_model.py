@@ -5,7 +5,7 @@ from shopwareapi.core.model import Model
 
 class ProductMediaModel(Model):
     id = fields.UUIDField(aliases=("productId"))
-    media = fields.RelationField("media.Media")
+    media = fields.ForeignKey("media.Media")
 
     class Meta:
         api_endpoint = "product"

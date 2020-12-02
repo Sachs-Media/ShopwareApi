@@ -20,3 +20,9 @@ class UUIDField(BaseField):
             except (AttributeError, ValueError):
                 raise ValueError("Invalid value '{}' for UUIDField".format(value))
         return value
+
+    def to_simple(self, val):
+        if isinstance(val, uuid.UUID):
+            return val.hex
+        else:
+            return val

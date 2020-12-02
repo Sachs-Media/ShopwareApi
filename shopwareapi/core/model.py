@@ -3,6 +3,7 @@ from shopwareapi.core.manager import Manager
 from shopwareapi.core.options import Options
 from shopwareapi.utils.helper import has_contribute_to_class, subclass_exception
 from shopwareapi.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+import json
 
 
 class ModelBase(type):
@@ -10,10 +11,10 @@ class ModelBase(type):
     def __new__(cls, name, bases, attrs, **kwargs):
         super_new = super().__new__
         parents = [b for b in bases if isinstance(b, ModelBase)]
-
         # Extract module and meta
         module = attrs.pop('__module__')
         attr_meta = attrs.pop('Meta', None)
+
         # Create new objects attrs
         new_attrs = {'__module__': module, "concrete": dict()}
 
@@ -99,45 +100,67 @@ class Model(metaclass=ModelBase):
 
                 if isinstance(field, BaseRelationField):
                     related_model_class = field.get_related_model_class()
-                    print(field.name)
-                    val = related_model_class()
+
+                    if field.name in kwargs:
+                        val = kwargs.pop(field.name)
+                    else:
+                        val = related_model_class.from_api({
+                            field.remote_field.name: kwargs.pop(field.attname)
+                        }, self._meta.swapi_client, True)
 
                 elif field.name in kwargs:
                     val = kwargs.pop(field.name)
 
-            setattr(self, field.name, val)
+            if field.null and field.attname in kwargs and kwargs.get(field.attname) is None:
+                val = None
+
+            #self.add_to_class(field.name, field.clean(val))
+            self.__dict__[field.name] = field.clean(val)
+            #setattr(self, field.name, field.clean(val))
             self.concrete[field.name] = val
 
         super().__init__()
 
     @classmethod
-    def from_api(cls, data, swapi_client):
+    def from_api(cls, data, swapi_client, lazy=False):
         new = cls(**data)
         new._meta.use(swapi_client)
+
+        if lazy:
+            return LazyModel(model=cls, **data)
+
         return new
 
-    def save(self):
-        changed_fields = self._diff_fields()
-        update_package = {
+    def create(self, force=False):
 
+        if force:
+            changed_fields = self._meta.fields
+        else:
+            changed_fields = self._diff_fields()
+
+        package = {
+          field.attname: field.to_simple(getattr(self, field.name)) for field in changed_fields
         }
-        # ToDo
+
+        if self._meta.pk.attname in self._meta.pk.attname:
+            pk_val = package[self._meta.pk.attname]
+
         self._meta.swapi_client.post(url={
-            "models": (self._meta.api_endpoint, self._get_pk_value())
-        })
+            "model": (self._meta.api_endpoint)
+        }, data=json.dumps(package))
+
 
     def _diff_fields(self):
         diff_field_list = []
         for field in self._meta.fields:
-
-            if getattr(self, field.name) != self._meta.concrete[field.name]:
+            if getattr(self, field.name) != self.concrete[field.name]:
                 diff_field_list.append(field)
         return diff_field_list
 
-    # def _get_pk_val(self, meta=None):
-    #     meta = meta or self._meta
-    #     return getattr(self, meta.pk.attname)
-    #
+    def _get_pk_val(self, meta=None):
+        meta = meta or self._meta
+        return getattr(self, meta.pk.attname)
+
     # def _set_pk_val(self, value):
     #     for parent_link in self._meta.parents.values():
     #         if parent_link and parent_link != self._meta.pk:
@@ -145,3 +168,43 @@ class Model(metaclass=ModelBase):
     #     return setattr(self, self._meta.pk.attname, value)
 
     # pk = property(_get_pk_val, _set_pk_val)
+
+
+class LazyModel:
+
+    def __init__(self, *args, model=None, **kwargs):
+        self._model = model
+        self._kwargs = kwargs
+        self._converted = False
+        name = model._meta.pk.name
+
+        setattr(self, name, self._kwargs.get(name))
+
+    def _get_pk_val(self, meta=None):
+        return getattr(self, self.model._meta.pk.name)
+
+
+    def __getattribute__(self, item):
+        if item in ["load"] or item.startswith("_") or self._converted:
+            return object.__getattribute__(self, item)
+        else:
+            raise AttributeError("Please use 'load' method first")
+
+    def load(self, *args, **kwargs):
+        if self._converted:
+            return self
+
+        val = None
+        name = None
+
+        for f in self._model._meta.fields:
+            if f.primary_key is True:
+                name = f.name
+                val = self._kwargs.get(f.name)
+        if val is None:
+            raise ValueError("No PrimaryKey value found")
+
+        data = self._model.objects.get(**{name: val})
+        self.__dict__ = data.__dict__
+        self._converted = True
+        return self
