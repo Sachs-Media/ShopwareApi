@@ -149,7 +149,6 @@ class Model(metaclass=ModelBase):
             "model": (self._meta.api_endpoint)
         }, data=json.dumps(package))
 
-
     def _diff_fields(self):
         diff_field_list = []
         for field in self._meta.fields:
