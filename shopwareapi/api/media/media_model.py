@@ -64,14 +64,14 @@ class MediaModel(Model):
         swapi_client = self._meta.swapi_client
 
         swapi_client.post(url={
-            "model": ("_action", "media", self.id.hex, "upload"),
-            "extension": file.get_file_extension(),
-            "fileName": file.get_filename(),
-        },
+                "model": ("_action", "media", self.id.hex, "upload"),
+                "extension": file.get_file_extension(),
+                "fileName": file.get_filename(),
+            },
             data=file.get_binary(),
             headers={
                 "Content-Type": str(file.get_content_type())
-            })
+        })
 
     def upload_from_path(self, path, **kwargs):
         file_kwargs = {
