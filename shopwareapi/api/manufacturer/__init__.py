@@ -1,1 +1,0 @@
-from shopwareapi.api.manufacturer.manufacturer_model import ManufacturerModel as Manufacturer

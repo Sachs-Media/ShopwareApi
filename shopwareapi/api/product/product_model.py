@@ -7,7 +7,7 @@ from shopwareapi.core.model import Model
 class ProductModel(Model):
     id = fields.UUIDField(primary_key=True, default=uuid.uuid4)
     media = fields.ManyToOneField("media.Media")
-    manufacturer = fields.ForeignKey("manufacturer.Manufacturer", related_name="manufacturerId")
+    manufacturer = fields.ForeignKey("product.ProductManufacturer", related_name="manufacturerId")
     unit = fields.ForeignKey("unit.Unit")
     tax = fields.ForeignKey("tax.Tax")
     cover = fields.ForeignKey("product.ProductMedia")
