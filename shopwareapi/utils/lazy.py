@@ -31,6 +31,5 @@ def lazy_property(fn):
         if not hasattr(self, attr_name):
             setattr(self, attr_name, fn(self))
         return getattr(self, attr_name)
+
     return _lazy_property
-
-

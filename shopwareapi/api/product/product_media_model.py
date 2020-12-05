@@ -1,10 +1,11 @@
+import uuid
+
 from shopwareapi import fields
-from shopwareapi.api.media.media_model import MediaModel
 from shopwareapi.core.model import Model
 
 
 class ProductMediaModel(Model):
-    id = fields.UUIDField(aliases=("productId"))
+    id = fields.UUIDField(aliases=("productId"), default=uuid.uuid4)
     media = fields.ForeignKey("media.Media")
 
     class Meta:

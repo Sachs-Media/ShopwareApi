@@ -11,7 +11,10 @@ class NumberField(BaseField):
         return "NumberField"
 
     def to_python(self, value):
+        if self.null is True and value is None:
+            return None
+
         try:
             return int(value)
-        except (AttributeError, ValueError):
-            raise ValueError("Invalid value '{}' for NumberField".format(value))
+        except (AttributeError, ValueError, TypeError):
+            raise ValueError("Invalid value '{}' in {} for NumberField".format(self.name, value))

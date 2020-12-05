@@ -10,6 +10,8 @@ class IntegerField(BaseField):
         return "IntegerField"
 
     def to_python(self, value):
+        if self.null is True and value is None:
+            return None
         try:
             return int(value)
         except (AttributeError, ValueError):

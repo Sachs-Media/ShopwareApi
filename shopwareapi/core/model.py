@@ -1,9 +1,10 @@
+import json
+
 from shopwareapi.core.field import BaseRelationField
 from shopwareapi.core.manager import Manager
 from shopwareapi.core.options import Options
-from shopwareapi.utils.helper import has_contribute_to_class, subclass_exception
 from shopwareapi.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-import json
+from shopwareapi.utils.helper import has_contribute_to_class, subclass_exception
 
 
 class ModelBase(type):
@@ -112,11 +113,11 @@ class Model(metaclass=ModelBase):
                     val = kwargs.pop(field.name)
 
             if field.null and field.attname in kwargs and kwargs.get(field.attname) is None:
-                val = None
+                val = field.get_default()
 
-            #self.add_to_class(field.name, field.clean(val))
+            # self.add_to_class(field.name, field.clean(val))
             self.__dict__[field.name] = field.clean(val)
-            #setattr(self, field.name, field.clean(val))
+            # setattr(self, field.name, field.clean(val))
             self.concrete[field.name] = val
 
         super().__init__()
@@ -139,7 +140,8 @@ class Model(metaclass=ModelBase):
             changed_fields = self._diff_fields()
 
         package = {
-          field.attname: field.to_simple(getattr(self, field.name)) for field in changed_fields
+            field.attname: field.to_simple(getattr(self, field.name)) for field in changed_fields if
+            field.read_only is False
         }
 
         if self._meta.pk.attname in self._meta.pk.attname:
@@ -181,7 +183,6 @@ class LazyModel:
 
     def _get_pk_val(self, meta=None):
         return getattr(self, self.model._meta.pk.name)
-
 
     def __getattribute__(self, item):
         if item in ["load"] or item.startswith("_") or self._converted:

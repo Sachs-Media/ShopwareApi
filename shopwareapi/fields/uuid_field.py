@@ -18,7 +18,7 @@ class UUIDField(BaseField):
             try:
                 return uuid.UUID(**{input_form: value})
             except (AttributeError, ValueError):
-                raise ValueError("Invalid value '{}' for UUIDField".format(value))
+                raise ValueError("Invalid value '{}' for UUIDField {}".format(value, self.name))
         return value
 
     def to_simple(self, val):

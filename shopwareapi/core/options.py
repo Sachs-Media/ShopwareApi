@@ -1,8 +1,6 @@
-from shopwareapi.core.field import BaseRelationField
 from shopwareapi.client import ShopwareClient
 from shopwareapi.core.field import BaseField
-from shopwareapi.utils.lazy import *
-
+from shopwareapi.core.field import BaseRelationField
 
 DEFAULT_NAMES = [
     "api_endpoint", "api_type", "swapi_client"
@@ -99,10 +97,10 @@ class Options:
                 delattr(self.model, field.name)
             except AttributeError:
                 pass
-            #getattr(self.model, field.name).fset(self, "asdfasdf")
+            # getattr(self.model, field.name).fset(self, "asdfasdf")
 
             setattr(self.model, field.name, getattr(data, field.name))
-            #setattr(self.model, field.name, getattr(data, field.name))
+            # setattr(self.model, field.name, getattr(data, field.name))
 
         self.lazy = False
         delattr(self.model, "__getattribute__")

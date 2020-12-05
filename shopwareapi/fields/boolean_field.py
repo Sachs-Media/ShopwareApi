@@ -11,6 +11,9 @@ class BooleanField(BaseField):
 
     def to_python(self, value):
 
+        if self.null is True and value is None:
+            return None
+
         try:
             if type(value) is bool:
                 return bool(value)
@@ -21,4 +24,4 @@ class BooleanField(BaseField):
             else:
                 raise ValueError("Unidentifiable value '{}' in BooleanField".format(value))
         except (AttributeError, ValueError):
-            raise ValueError("Invalid value '{}' for BooleanField".format(value))
+            raise ValueError("Invalid value '{}' for BooleanField {}".format(value, self.name))

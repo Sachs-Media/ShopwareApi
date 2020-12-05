@@ -2,11 +2,14 @@ from shopwareapi import fields
 from shopwareapi.core.model import Model
 
 
-class MediaFolderModel(Model):
-    id = fields.UUIDField(aliases=("mediaFolderId"))
-    configuration = fields.ForeignKey("media.Configuration")
-    parent = fields.ForeignKey("media.MediaFolder")
-    name = fields.CharField()
+class MediaFolderConfigurationModel(Model):
+    id = fields.UUIDField(primary_key=True, aliases=("mediaFolderId"))
+    createThumbnails = fields.BooleanField(default=False)
+    private = fields.BooleanField(default=False)
+    thumbnailQuality = fields.IntegerField(null=True)
+    keepAspectRatio = fields.BooleanField(default=False)
+    private = fields.BooleanField(default=False)
+    noAssociation = fields.BooleanField(null=True)
 
     class Meta:
         api_endpoint = "media-folder-configuration"

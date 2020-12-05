@@ -1,6 +1,3 @@
-import inspect
-
-
 class NOT_PROVIDED:
     pass
 
@@ -13,9 +10,11 @@ class BaseField:
 
     def __init__(self, name=None, aliases=NOT_PROVIDED, primary_key=False,
                  max_length=None, null=False,
-                 rel=None, default=NOT_PROVIDED, editable=True, choices=None, help_text='', validators=(), attname=None):
+                 rel=None, default=NOT_PROVIDED, editable=True, choices=None, help_text='', validators=(),
+                 read_only=False, attname=None):
         self.name = name
         self.attname = attname
+        self.read_only = read_only
         self.aliases = aliases
         self.primary_key = primary_key
         self.max_length = max_length
@@ -83,9 +82,9 @@ class BaseRelationField(BaseField):
         self.to = to
         # self.related_model = self.get_related_model_class()
 
-        #print(inspect.getmro(self.__class__))
-        #class_lookups = [parent for parent in inspect.getmro(self.model.__class__)]
-        #print(class_lookups)
+        # print(inspect.getmro(self.__class__))
+        # class_lookups = [parent for parent in inspect.getmro(self.model.__class__)]
+        # print(class_lookups)
 
         #
         # rel = self.rel_class(

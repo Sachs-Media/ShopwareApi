@@ -1,4 +1,3 @@
-from shopwareapi.core.field import BaseField
 from shopwareapi.core.field import BaseRelationField
 
 
