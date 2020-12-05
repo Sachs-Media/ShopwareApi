@@ -50,6 +50,7 @@ class MediaModel(Model):
 
     class Meta:
         api_endpoint = "media"
+        api_type = "media"
 
     def upload(self, file):
         if not (hasattr(self, "id") and isinstance(self.id, uuid.UUID)):
