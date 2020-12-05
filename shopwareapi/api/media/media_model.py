@@ -1,5 +1,11 @@
+import mimetypes
+import os
 import uuid
 from pathlib import Path
+from urllib.parse import urlparse
+import io
+
+import requests
 
 from shopwareapi import fields
 from shopwareapi.core.model import Model
@@ -65,3 +71,27 @@ class MediaModel(Model):
             headers={
                 "Content-Type": str(file.get_content_type())
             })
+
+    def upload_from_path(self, path, **kwargs):
+        file_kwargs = {
+            "content_type": mimetypes.guess_type(path),
+            "path": path
+        }
+        file_kwargs.update(kwargs)
+        with open(path, "rb") as fobj:
+            f = File(fobj, **file_kwargs)
+        return self.upload(f)
+
+    def upload_from_url(self, url, **kwargs):
+        o = urlparse(url)
+        image_src = requests.get(o.geturl(), stream=True)
+        image_data = io.BytesIO(image_src.content)
+        content_type = image_src.headers.get("Content-Type") or mimetypes.guess_type(o.path)
+
+        file_kwargs = {
+            "content_type": content_type,
+            "path": o.path
+        }
+        file_kwargs.update(**kwargs)
+        f = File(image_data, **file_kwargs)
+        return self.upload(f)
