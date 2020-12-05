@@ -3,4 +3,4 @@ Python shopware-api
 ===================
 
 
-Current Version: 0.1.4
+Current Version: 0.1.5
