@@ -12,7 +12,7 @@ class QuerySet:
         return len(self._result_cache)
 
     def __iter__(self):
-        return self._result_cache
+        return iter(self._result_cache)
 
     def get(self, *args, **kwargs):
         # print(self.model._meta.api_endpoint)
