@@ -14,7 +14,7 @@ class ProductModel(Model):
     # - price = fields.VirtualField
     productNumber = fields.CharField()
     stock = fields.IntegerField(null=True)
-    restockTime = fields.IntegerField()
+    restockTime = fields.IntegerField(null=True)
     active = fields.BooleanField()
     availableStock = fields.IntegerField(null=True)
     available = fields.BooleanField()

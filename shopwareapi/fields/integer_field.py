@@ -15,4 +15,4 @@ class IntegerField(BaseField):
         try:
             return int(value)
         except (AttributeError, ValueError):
-            raise ValueError("Invalid value '{}' for IntegerField".format(value))
+            raise ValueError("Invalid value '{}' for IntegerField ({})".format(value, self.name))
