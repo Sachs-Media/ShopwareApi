@@ -41,7 +41,7 @@ class File:
 
 
 class MediaModel(Model):
-    id = fields.UUIDField(primary_key=True, aliases=("productId"), default=uuid.uuid4)
+    id = fields.UUIDField(primary_key=True, default=uuid.uuid4)
     mediaFolder = fields.ForeignKey("media.MediaFolder")
     fileName = fields.CharField(read_only=True)
     fileExtension = fields.CharField(read_only=True)

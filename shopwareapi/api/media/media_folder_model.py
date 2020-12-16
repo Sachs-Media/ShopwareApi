@@ -6,8 +6,8 @@ from shopwareapi.core.model import Model
 
 class MediaFolderModel(Model):
     id = fields.UUIDField(primary_key=True, default=uuid.uuid4, aliases=("mediaFolderId"))
-    configuration = fields.ForeignKey("media.Configuration")
-    parent = fields.ForeignKey("media.MediaFolder")
+    configuration = fields.ForeignKey("media.media_folder_configuration_model.MediaFolderConfigurationModel", related_name="configurationId")
+    parent = fields.CharField()# ForeignKey("self")
     name = fields.CharField()
 
     class Meta:

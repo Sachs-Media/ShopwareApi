@@ -67,6 +67,12 @@ class QuerySet:
         obj.create(force=True)
         return obj
 
+    def update(self, **kwargs):
+        obj = self.model(**kwargs)
+        obj._meta.use(self.model._meta.swapi_client)
+        obj.update(force=True)
+        return obj
+
     def update_filter_query(self, **kwargs):
         query = self.filter_query.copy()
 

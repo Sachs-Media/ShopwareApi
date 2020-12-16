@@ -5,7 +5,9 @@ from shopwareapi.core.manager import Manager
 from shopwareapi.core.options import Options
 from shopwareapi.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from shopwareapi.utils.helper import has_contribute_to_class, subclass_exception
+import logging
 
+log = logging.getLogger(__name__)
 
 class ModelBase(type):
 
@@ -105,6 +107,7 @@ class Model(metaclass=ModelBase):
                     if field.name in kwargs:
                         val = kwargs.pop(field.name)
                     else:
+                        print(kwargs)
                         val = related_model_class.from_api({
                             field.remote_field.name: kwargs.pop(field.attname)
                         }, self._meta.swapi_client, True)
@@ -149,6 +152,26 @@ class Model(metaclass=ModelBase):
 
         self._meta.swapi_client.post(url={
             "model": (self._meta.api_endpoint)
+        }, data=json.dumps(package))
+
+
+    def update(self, force=False):
+
+        if force:
+            changed_fields = self._meta.fields
+        else:
+            changed_fields = self._diff_fields()
+
+        package = {
+            field.attname: field.to_simple(getattr(self, field.name)) for field in changed_fields if
+            field.read_only is False
+        }
+
+        if self._meta.pk.attname in self._meta.pk.attname:
+            pk_val = package[self._meta.pk.attname]
+
+        self._meta.swapi_client.patch(url={
+            "model": (self._meta.api_endpoint, self.pk)
         }, data=json.dumps(package))
 
     def _diff_fields(self):

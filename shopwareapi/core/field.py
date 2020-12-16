@@ -1,3 +1,6 @@
+import sys
+import copy
+
 class NOT_PROVIDED:
     pass
 
@@ -78,9 +81,9 @@ class BaseRelationField(BaseField):
 
     def __init__(self, to, **kwargs):
         self.related_name = kwargs.pop("related_name", "")
-        super().__init__(**kwargs)
         self.to = to
-        # self.related_model = self.get_related_model_class()
+        super().__init__(**kwargs)
+        self.related_model = self.get_related_model_class()
 
         # print(inspect.getmro(self.__class__))
         # class_lookups = [parent for parent in inspect.getmro(self.model.__class__)]
@@ -100,14 +103,25 @@ class BaseRelationField(BaseField):
         return "%sId" % self.name
 
     def get_related_model_class(self):
+
+        print(self.__dict__)
+
+
+
         if isinstance(self.to, str) and not hasattr(self, "related_model"):
-            name = "shopwareapi.api.{}".format(self.to)
-            components = name.split(".")
-            mod = __import__(".".join(components[:-1]), fromlist=components[-1:])
-            model = getattr(mod, components[-1:][0])
-            self.related_model = model
-            # model.objects.use(self.model._meta.swapi_client)
-            return model
+
+            if self.to == "self":
+                a = copy.deepcopy(self.__class__)
+                a.objects.use(self.model._meta.swapi_client)
+                return self.__class__
+            else:
+                name = "shopwareapi.api.{}".format(self.to)
+                components = name.split(".")
+                mod = __import__(".".join(components[:-1]), fromlist=components[-1:])
+                model = getattr(mod, components[-1:][0])
+                self.related_model = model
+                model.objects.use(self.model._meta.swapi_client)
+                return model
         elif hasattr(self, "related_model"):
             return self.related_model
         else:
