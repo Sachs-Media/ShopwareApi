@@ -56,6 +56,7 @@ class QuerySet:
         results = []
         for item in result_response.get("data"):
             results.append(self.model.from_api(self._normalize_response(item), self.model._meta))
+
         return self._chain(_result_cache=results)
 
     def first(self, *args, **kwargs):

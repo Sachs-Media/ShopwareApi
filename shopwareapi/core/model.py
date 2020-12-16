@@ -9,6 +9,7 @@ import logging
 
 log = logging.getLogger(__name__)
 
+
 class ModelBase(type):
 
     def __new__(cls, name, bases, attrs, **kwargs):
@@ -83,7 +84,6 @@ class ModelBase(type):
         cls.add_to_class('objects', Manager())
 
     def add_to_class(cls, name, value):
-
         if has_contribute_to_class(value):
             # Assign api objects via contribute_to_class
             value.contribute_to_class(cls, name)
@@ -107,7 +107,6 @@ class Model(metaclass=ModelBase):
                     if field.name in kwargs:
                         val = kwargs.pop(field.name)
                     else:
-                        print(kwargs)
                         val = related_model_class.from_api({
                             field.remote_field.name: kwargs.pop(field.attname)
                         }, self._meta.swapi_client, True)
@@ -129,10 +128,8 @@ class Model(metaclass=ModelBase):
     def from_api(cls, data, swapi_client, lazy=False):
         new = cls(**data)
         new._meta.use(swapi_client)
-
         if lazy:
             return LazyModel(model=cls, **data)
-
         return new
 
     def create(self, force=False):
@@ -146,9 +143,6 @@ class Model(metaclass=ModelBase):
             field.attname: field.to_simple(getattr(self, field.name)) for field in changed_fields if
             field.read_only is False
         }
-
-        if self._meta.pk.attname in self._meta.pk.attname:
-            pk_val = package[self._meta.pk.attname]
 
         self._meta.swapi_client.post(url={
             "model": (self._meta.api_endpoint)
@@ -171,7 +165,7 @@ class Model(metaclass=ModelBase):
             pk_val = package[self._meta.pk.attname]
 
         self._meta.swapi_client.patch(url={
-            "model": (self._meta.api_endpoint, self.pk)
+            "model": (self._meta.api_endpoint, pk_val)
         }, data=json.dumps(package))
 
     def _diff_fields(self):

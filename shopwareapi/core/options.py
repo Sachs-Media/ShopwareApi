@@ -78,7 +78,7 @@ class Options:
         self.manager = manager
 
     def setup_pk(self, field):
-        if not self.pk and field.primary_key:
+        if field.primary_key:
             self.pk = field
 
     def use(self, swapi_client: ShopwareClient):

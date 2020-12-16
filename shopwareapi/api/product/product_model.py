@@ -11,7 +11,7 @@ class ProductModel(Model):
     manufacturer = fields.ForeignKey("product.product_manufacturer_model.ProductManufacturerModel", related_name="manufacturerId")
     unit = fields.ForeignKey("unit.Unit")
     tax = fields.ForeignKey("tax.tax_model.TaxModel", related_name="taxId")
-    cover = fields.CharField()# .ForeignKey("product.product_media_model.ProductMediaModel", related_name="coverId", null=True)
+    coverId = fields.CharField()# .ForeignKey("product.product_media_model.ProductMediaModel", related_name="coverId", null=True)
     price = fields.ListField(schema=fields.DictField(schema={
         "gross": fields.NumberField(),
         "net": fields.NumberField(),
