@@ -1,0 +1,1 @@
+from shopwareapi.api.sales_channel.sales_channel_model import SalesChannelModel as SalesChannel
