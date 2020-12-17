@@ -21,6 +21,9 @@ class DictField(BaseField):
 
     def to_simple(self, value):
 
+        if value is None:
+            return {}
+
         result = {}
         if self._schema is None:
             for key, value in value.items():
@@ -31,9 +34,11 @@ class DictField(BaseField):
             return result
         else:
             for key, field in self._schema.items():
+
                 if isinstance(field, BaseRelationField):
                     name = field.related_name or key
                 else:
                     name = field.attname or field.name or key
                 result[name] = field.to_simple(value.get(key))
+
         return result
