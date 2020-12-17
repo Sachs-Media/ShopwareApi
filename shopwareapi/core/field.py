@@ -87,16 +87,6 @@ class BaseRelationField(BaseField):
         if not self.null:
             self.related_model = self.get_related_model_class()
 
-        # print(inspect.getmro(self.__class__))
-        # class_lookups = [parent for parent in inspect.getmro(self.model.__class__)]
-        # print(class_lookups)
-
-        #
-        # rel = self.rel_class(
-        #     self, to,
-        #     related_name=related_name
-        # )
-
     def contribute_to_class(self, cls, name, private_only=False):
         super(BaseRelationField, self).contribute_to_class(cls, name, private_only=False)
 
@@ -108,15 +98,20 @@ class BaseRelationField(BaseField):
         return "%sId" % self.name
 
     def get_related_model_class(self):
+
         if isinstance(self.to, str) and not hasattr(self, "related_model"):
-            name = "shopwareapi.api.{}".format(self.to)
-            components = name.split(".")
-            mod = __import__(".".join(components[:-1]), fromlist=components[-1:])
-            model = getattr(mod, components[-1:][0])
-            self.related_model = model
-            #if not isinstance(model, LazyModel):
-            #model.objects.use(self.model._meta.swapi_client)
-            return model
+            if self.to == "self":
+                self.model._reverse.append(self)
+                self.related_model = self.model
+                return self.model
+            else:
+                name = "shopwareapi.api.{}".format(self.to)
+                components = name.split(".")
+                mod = __import__(".".join(components[:-1]), fromlist=components[-1:])
+                model = getattr(mod, components[-1:][0])
+                self.related_model = model
+                model._reverse.append(self)
+                return model
 
         elif hasattr(self, "related_model"):
             return self.related_model

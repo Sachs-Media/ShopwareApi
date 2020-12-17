@@ -42,11 +42,12 @@ class File:
 
 class MediaModel(Model):
     id = fields.UUIDField(primary_key=True, default=uuid.uuid4)
-    mediaFolder = fields.ForeignKey("media.MediaFolder")
+    mediaFolder = fields.ForeignKey("media.media_folder_model.MediaFolderModel")
     fileName = fields.CharField(read_only=True)
     fileExtension = fields.CharField(read_only=True)
     hasFile = fields.BooleanField(default=False)
     position = fields.NumberField(null=True)
+    customFields = fields.DictField(null=True)
 
     class Meta:
         api_endpoint = "media"

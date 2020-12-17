@@ -6,6 +6,7 @@ from shopwareapi.core.options import Options
 from shopwareapi.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from shopwareapi.utils.helper import has_contribute_to_class, subclass_exception
 import logging
+import inspect
 
 log = logging.getLogger(__name__)
 
@@ -13,6 +14,7 @@ log = logging.getLogger(__name__)
 class ModelBase(type):
 
     def __new__(cls, name, bases, attrs, **kwargs):
+
         super_new = super().__new__
         parents = [b for b in bases if isinstance(b, ModelBase)]
         # Extract module and meta
@@ -20,7 +22,7 @@ class ModelBase(type):
         attr_meta = attrs.pop('Meta', None)
 
         # Create new objects attrs
-        new_attrs = {'__module__': module, "concrete": dict()}
+        new_attrs = {'__module__': module, "concrete": dict(), "_reverse": []}
 
         contributable_attrs = {}
 
@@ -116,6 +118,7 @@ class Model(metaclass=ModelBase):
             if field.null and field.attname in kwargs and kwargs.get(field.attname) is None:
                 val = field.get_default()
 
+
             # self.add_to_class(field.name, field.clean(val))
             self.__dict__[field.name] = field.clean(val)
             # setattr(self, field.name, field.clean(val))
@@ -147,6 +150,11 @@ class Model(metaclass=ModelBase):
         self._meta.swapi_client.post(url={
             "model": (self._meta.api_endpoint)
         }, data=json.dumps(package))
+
+    def delete(self):
+        self._meta.swapi_client.delete(url={
+            "model": (self._meta.api_endpoint, self._get_pk_val().hex)
+        })
 
     def update(self, force=False):
 
@@ -186,6 +194,11 @@ class Model(metaclass=ModelBase):
 
     # pk = property(_get_pk_val, _set_pk_val)
 
+    def reverse(self, name):
+        for r in self._reverse:
+            if name == r.model._meta.model.__name__:
+                return r.model.objects.use(self._meta.swapi_client).filter(**{r.related_name: self._get_pk_val()} )
+
 
 class LazyModel:
 
@@ -219,8 +232,4 @@ class LazyModel:
                 val = self._kwargs.get(f.name)
         if val is None:
             raise ValueError("No PrimaryKey value found")
-
-        data = self._model.objects.get(**{name: val})
-        self.__dict__ = data.__dict__
-        self._converted = True
-        return self
+        return self._model.objects.get(**{name: val})
