@@ -100,7 +100,6 @@ class Model(metaclass=ModelBase):
             val = field.get_default()
 
             if kwargs:
-
                 if isinstance(field, BaseRelationField):
                     related_model_class = field.get_related_model_class()
 
@@ -128,6 +127,7 @@ class Model(metaclass=ModelBase):
     def from_api(cls, data, swapi_client, lazy=False):
         new = cls(**data)
         new._meta.use(swapi_client)
+
         if lazy:
             return LazyModel(model=cls, **data)
         return new
@@ -147,7 +147,6 @@ class Model(metaclass=ModelBase):
         self._meta.swapi_client.post(url={
             "model": (self._meta.api_endpoint)
         }, data=json.dumps(package))
-
 
     def update(self, force=False):
 

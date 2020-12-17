@@ -84,6 +84,8 @@ class BaseRelationField(BaseField):
         self.related_name = kwargs.pop("related_name", "")
         self.to = to
         super().__init__(**kwargs)
+        if not self.null:
+            self.related_model = self.get_related_model_class()
 
         # print(inspect.getmro(self.__class__))
         # class_lookups = [parent for parent in inspect.getmro(self.model.__class__)]
@@ -96,7 +98,6 @@ class BaseRelationField(BaseField):
         # )
 
     def contribute_to_class(self, cls, name, private_only=False):
-        self.related_model = self.get_related_model_class()
         super(BaseRelationField, self).contribute_to_class(cls, name, private_only=False)
 
     @property

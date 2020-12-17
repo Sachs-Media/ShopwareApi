@@ -7,11 +7,10 @@ from shopwareapi.core.model import Model
 class ProductModel(Model):
     id = fields.UUIDField(primary_key=True, default=uuid.uuid4)
     name = fields.CharField()
-    # media = fields.ManyToOneField("media.media_model.MediaModel")
     manufacturer = fields.ForeignKey("product.product_manufacturer_model.ProductManufacturerModel", related_name="manufacturerId")
     unit = fields.ForeignKey("unit.Unit")
     tax = fields.ForeignKey("tax.tax_model.TaxModel", related_name="taxId")
-    coverId = fields.CharField()# .ForeignKey("product.product_media_model.ProductMediaModel", related_name="coverId", null=True)
+    cover = fields.ForeignKey("product.product_media_model.ProductMediaModel", related_name="coverId", null=True)
     price = fields.ListField(schema=fields.DictField(schema={
         "gross": fields.NumberField(),
         "net": fields.NumberField(),

@@ -18,7 +18,6 @@ class QuerySet:
         # print(self.model._meta.api_endpoint)
 
         filter_result = self.filter(**kwargs)
-
         num = len(filter_result)
         if num == 1:
             return filter_result.first()
@@ -54,7 +53,9 @@ class QuerySet:
         }, data=json.dumps(self.filter_query))
 
         results = []
+
         for item in result_response.get("data"):
+
             results.append(self.model.from_api(self._normalize_response(item), self.model._meta))
 
         return self._chain(_result_cache=results)
