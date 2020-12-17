@@ -17,6 +17,10 @@ class ProductModel(Model):
         "currency": fields.ForeignKey("currency.currency_model.CurrencyModel", related_name="currencyId"),
         "linked": fields.BooleanField(default=False)
     }))
+    visibilities = fields.ListField(schema=fields.DictField(schema={
+        "salesChannel": fields.ForeignKey("sales_channel.sales_channel_model.SalesChannelModel", related_name="salesChannelId"),
+        "visibility": fields.NumberField(),
+    }))
     productNumber = fields.CharField()
     stock = fields.IntegerField(null=True)
     restockTime = fields.IntegerField(null=True)

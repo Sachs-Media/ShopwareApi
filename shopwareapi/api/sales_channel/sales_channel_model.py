@@ -6,9 +6,7 @@ from shopwareapi.core.model import Model
 
 class SalesChannelModel(Model):
     id = fields.UUIDField(primary_key=True, default=uuid.uuid4)
-    name = fields.CharField(max_length=255)
-
-
+    name = fields.CharField(max_length=255, null=True)
 
     class Meta:
         api_endpoint = "sales-channel"
