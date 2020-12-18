@@ -24,6 +24,13 @@ class ShopwareClientHttpError(RuntimeError):
         Raises when statuscode is not 299 <= response.status_code >= 200
     """
 
+    def __init__(self, message, errors=None):
+        self.message = message
+        self.errors = errors
+
+    def __str__(self):
+        return str(self.message)
+
 
 class ParameterError(KeyError):
     """

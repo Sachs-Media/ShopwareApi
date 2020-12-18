@@ -198,7 +198,7 @@ class ShopwareClientHttpMixin(object):
                 log.debug("Request URL: %s " % response.request.url)
                 log.debug("Request TXT: %s " % response.request.body)
                 log.debug("Response TXT: %s " % response.text)
-                raise ShopwareClientHttpError("Shopware returns one or multiple errors")
+                raise ShopwareClientHttpError("Shopware returns one or multiple errors", error_response.get("errors"))
 
             if response.text != "":
                 return response.json()
