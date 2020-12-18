@@ -39,4 +39,6 @@ class DictField(BaseField):
                     name = field.related_name or key
                 else:
                     name = field.attname or field.name or key
+                result[name] = field.to_simple(value.get(key))
+
         return result
