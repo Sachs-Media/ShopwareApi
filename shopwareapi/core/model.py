@@ -108,9 +108,10 @@ class Model(metaclass=ModelBase):
                     if field.name in kwargs:
                         val = kwargs.pop(field.name)
                     else:
-                        val = related_model_class.from_api({
-                            field.remote_field.name: kwargs.pop(field.attname)
-                        }, self._meta.swapi_client, True)
+                        if field.attname in kwargs:
+                            val = related_model_class.from_api({
+                                field.remote_field.name: kwargs.pop(field.attname)
+                            }, self._meta.swapi_client, True)
 
                 elif field.name in kwargs:
                     val = kwargs.pop(field.name)
@@ -142,10 +143,15 @@ class Model(metaclass=ModelBase):
         else:
             changed_fields = self._diff_fields()
 
+
         package = {
-            field.attname: field.to_simple(getattr(self, field.name)) for field in changed_fields if
-            field.read_only is False
+            #field.attname: field.to_simple(getattr(self, field.name)) for field in changed_fields if
+            #field.read_only is False
         }
+
+        for field in changed_fields:
+            if field.read_only is False:
+                package[field.attname] = field.to_simple(getattr(self, field.name))
 
         self._meta.swapi_client.post(url={
             "model": (self._meta.api_endpoint)
@@ -198,7 +204,6 @@ class Model(metaclass=ModelBase):
         for r in self._reverse:
             if name == r.model._meta.model.__name__:
                 return r.model.objects.use(self._meta.swapi_client).filter(**{r.related_name: self._get_pk_val()} )
-
 
 class LazyModel:
 

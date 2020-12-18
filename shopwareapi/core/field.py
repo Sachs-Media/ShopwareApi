@@ -98,7 +98,6 @@ class BaseRelationField(BaseField):
         return "%sId" % self.name
 
     def get_related_model_class(self):
-
         if isinstance(self.to, str) and not hasattr(self, "related_model"):
             if self.to == "self":
                 self.model._reverse.append(self)
@@ -113,7 +112,7 @@ class BaseRelationField(BaseField):
                 model._reverse.append(self)
                 return model
 
-        elif hasattr(self, "related_model"):
+        elif hasattr(self, "related_model") and self.related_model is not None:
             return self.related_model
         else:
             return self.to

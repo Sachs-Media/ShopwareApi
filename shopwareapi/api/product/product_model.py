@@ -5,12 +5,13 @@ from shopwareapi.core.model import Model
 
 
 class ProductModel(Model):
-    id = fields.UUIDField(primary_key=True, default=uuid.uuid4)
+    id = fields.UUIDField(primary_key=True, aliases=("productId", ), default=uuid.uuid4)
     name = fields.CharField()
+    description = fields.CharField()
     manufacturer = fields.ForeignKey("product.product_manufacturer_model.ProductManufacturerModel", related_name="manufacturerId")
     unit = fields.ForeignKey("unit.Unit")
     tax = fields.ForeignKey("tax.tax_model.TaxModel", related_name="taxId")
-    cover = fields.ForeignKey("product.product_media_model.ProductMediaModel", related_name="coverId", null=True)
+    cover = fields.ForeignKey("product.product_media_model.ProductMediaModel", related_name="coverId")
     price = fields.ListField(schema=fields.DictField(schema={
         "gross": fields.NumberField(),
         "net": fields.NumberField(),
@@ -20,6 +21,17 @@ class ProductModel(Model):
     visibilities = fields.ListField(schema=fields.DictField(schema={
         "salesChannel": fields.ForeignKey("sales_channel.sales_channel_model.SalesChannelModel", related_name="salesChannelId"),
         "visibility": fields.NumberField(),
+    }))
+    media = fields.ListField(schema=fields.DictField(schema={
+        "id": fields.ForeignKey("product.product_media_model.ProductMediaModel", related_name="id"),
+        "mediaId": fields.ForeignKey("media.media_model.MediaModel", related_name="mediaId"),
+        "position": fields.NumberField()
+    }))
+    categories = fields.ListField(schema=fields.DictField(schema={
+        "id": fields.ForeignKey("category.category_model.CategoryModel", related_name="id")
+    }))
+    tags = fields.ListField(schema=fields.DictField(schema={
+        "id": fields.ForeignKey("tag.tag_model.TagModel", related_name="id")
     }))
     productNumber = fields.CharField()
     stock = fields.IntegerField(null=True)

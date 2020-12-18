@@ -3,7 +3,7 @@ from shopwareapi.core.model import Model
 
 
 class MediaFolderConfigurationModel(Model):
-    id = fields.UUIDField(primary_key=True, aliases=("mediaFolderId"))
+    id = fields.UUIDField(primary_key=True, aliases=("MediaFolderConfigurationId", "configurationId"))
     createThumbnails = fields.BooleanField(default=False)
     private = fields.BooleanField(default=False)
     thumbnailQuality = fields.IntegerField(null=True)

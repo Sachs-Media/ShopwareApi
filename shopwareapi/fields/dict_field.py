@@ -39,6 +39,12 @@ class DictField(BaseField):
                     name = field.related_name or key
                 else:
                     name = field.attname or field.name or key
+
+                print("-"*100)
+                print(key)
+                print(value)
+                print(value.get(key))
+                print(field)
                 result[name] = field.to_simple(value.get(key))
 
         return result
