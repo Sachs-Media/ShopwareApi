@@ -203,8 +203,8 @@ class ShopwareClientHttpMixin(object):
             if response.text != "":
                 return response.json()
         except json.decoder.JSONDecodeError as e:
-            log.error(response.request.__dict__)
-            log.error(response.request.body)
             log.error("The shopware response isnt a Json")
-            log.debug(response.text)
+            log.error(response.text)
+            log.debug(response.request.__dict__)
+            log.debug(response.request.body)
             raise e
