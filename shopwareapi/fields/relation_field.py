@@ -39,6 +39,7 @@ class ManyToOneField(BaseRelationField):
 
     def to_simple(self, val):
 
+        print(val)
         result = []
         for model in val:
             package = {}

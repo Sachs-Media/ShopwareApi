@@ -22,11 +22,15 @@ class ProductModel(Model):
         "salesChannel": fields.ForeignKey("sales_channel.sales_channel_model.SalesChannelModel", related_name="salesChannelId"),
         "visibility": fields.NumberField(),
     }))
-    media = fields.ListField(schema=fields.DictField(schema={
-        "id": fields.ForeignKey("product.product_media_model.ProductMediaModel", related_name="id"),
-        "mediaId": fields.ForeignKey("media.media_model.MediaModel", related_name="mediaId"),
-        "position": fields.NumberField()
-    }))
+
+    media = fields.ManyToOneField("product.product_media_model.ProductMediaModel", related_name="media")
+
+    #media = fields.ListField(schema=fields.DictField(schema={
+    #    "id": fields.ForeignKey("product.product_media_model.ProductMediaModel", related_name="id"),
+    #    "mediaId": fields.ForeignKey("media.media_model.MediaModel", related_name="mediaId"),
+    #    "position": fields.NumberField()
+    #}))
+
     categories = fields.ListField(schema=fields.DictField(schema={
         "id": fields.ForeignKey("category.category_model.CategoryModel", related_name="id")
     }))
@@ -40,6 +44,8 @@ class ProductModel(Model):
     availableStock = fields.IntegerField(null=True)
     available = fields.BooleanField(default=True)
     ean = fields.CharField()
+    purchaseUnit = fields.CharField(null=True)
+    packUnit = fields.CharField(null=True)
     purchaseSteps = fields.IntegerField(null=True)
     minPurchase = fields.IntegerField(null=True)
     maxPurchase = fields.IntegerField(null=True)
@@ -47,7 +53,8 @@ class ProductModel(Model):
     width = fields.NumberField(null=True)
     height = fields.NumberField(null=True)
     length = fields.NumberField(null=True)
-    categoryTree = fields.ManyToOneField("category.category_model.CategoryModel")
+    categoryTree = fields.ListField(schema=fields.ForeignKey("category.category_model.CategoryModel", related_name="id"))
+    #categoryTree = fields.ManyToOneField("category.category_model.CategoryModel")
     #crossSellings = fields.ListField(schema=fields.ForeignKey("product.product_cross_selling_model.ProductCrossSellingModel"))
     # name
     # description

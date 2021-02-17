@@ -91,7 +91,6 @@ class QuerySet:
             query.update({"includes": includes})
 
         filter = []
-        associations = []
 
         for field in self.model._meta.fields:
 
@@ -102,7 +101,6 @@ class QuerySet:
                     "field": field.attname,
                     "value": field.to_simple(search_value)
                 })
-
 
         if filter:
             query.update({"filter": filter})
