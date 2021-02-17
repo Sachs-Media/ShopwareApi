@@ -1,12 +1,12 @@
 import json
 
+from shopwareapi.core.lazymodel import LazyModel
 from shopwareapi.core.field import BaseRelationField
 from shopwareapi.core.manager import Manager
 from shopwareapi.core.options import Options
 from shopwareapi.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from shopwareapi.utils.helper import has_contribute_to_class, subclass_exception
 import logging
-import inspect
 
 log = logging.getLogger(__name__)
 
@@ -104,7 +104,6 @@ class Model(metaclass=ModelBase):
             if kwargs:
                 if isinstance(field, BaseRelationField):
                     related_model_class = field.get_related_model_class()
-
                     if field.name in kwargs:
                         val = kwargs.pop(field.name)
                     else:
@@ -205,36 +204,4 @@ class Model(metaclass=ModelBase):
             if name == r.model._meta.model.__name__:
                 return r.model.objects.use(self._meta.swapi_client).filter(**{r.related_name: self._get_pk_val()} )
 
-class LazyModel:
 
-    def __init__(self, *args, model=None, **kwargs):
-        self._model = model
-        self._kwargs = kwargs
-        self._converted = False
-        name = model._meta.pk.name
-
-        setattr(self, name, self._kwargs.get(name))
-
-    def _get_pk_val(self, meta=None):
-        return getattr(self, self.model._meta.pk.name)
-
-    def __getattribute__(self, item):
-        if item in ["load"] or item.startswith("_") or self._converted:
-            return object.__getattribute__(self, item)
-        else:
-            raise AttributeError("Please use 'load' method first")
-
-    def load(self, *args, **kwargs):
-        if self._converted:
-            return self
-
-        val = None
-        name = None
-
-        for f in self._model._meta.fields:
-            if f.primary_key is True:
-                name = f.name
-                val = self._kwargs.get(f.name)
-        if val is None:
-            raise ValueError("No PrimaryKey value found")
-        return self._model.objects.get(**{name: val})

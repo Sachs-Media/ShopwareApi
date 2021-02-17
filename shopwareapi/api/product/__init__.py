@@ -1,5 +1,8 @@
 from shopwareapi.api.product.product_media_model import ProductMediaModel as ProductMedia
 from shopwareapi.api.product.product_model import ProductModel as Product
 from shopwareapi.api.product.product_manufacturer_model import ProductManufacturerModel as ProductManufacturer
+from shopwareapi.api.product.product_cross_selling_model import ProductCrossSellingModel as CrossSelling
+from shopwareapi.api.product.product_cross_selling_assigned_product_model import ProductCrossSellingAssignedProductModel as CrossSellingAssignedProduct
+
 Manufacturer = ProductManufacturer
 

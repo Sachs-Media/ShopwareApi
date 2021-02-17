@@ -25,11 +25,16 @@ class ShopwareClientHttpError(RuntimeError):
     """
 
     def __init__(self, message, errors=None):
-        self.message = message
+
+        # Call the base class constructor with the parameters it needs
+        super().__init__(message)
+
+        # Now for your custom code...
         self.errors = errors
+        self.message = message
 
     def __str__(self):
-        return str(self.message)
+        return "%s %s" % (str(self.message), str(self.errors))
 
 
 class ParameterError(KeyError):

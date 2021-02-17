@@ -1,7 +1,6 @@
 import sys
 import copy
 
-
 class NOT_PROVIDED:
     pass
 
@@ -89,6 +88,19 @@ class BaseRelationField(BaseField):
 
     def contribute_to_class(self, cls, name, private_only=False):
         super(BaseRelationField, self).contribute_to_class(cls, name, private_only=False)
+
+    def _get_default(self):
+
+        if self.has_default():
+            if callable(self.default):
+                return self.default
+            return lambda: self.default
+
+        if self.null:
+            return return_None
+
+        return str  # return empty string
+
 
     @property
     def remote_field(self):

@@ -48,7 +48,7 @@ class ProductModel(Model):
     height = fields.NumberField(null=True)
     length = fields.NumberField(null=True)
     categoryTree = fields.ManyToOneField("category.category_model.CategoryModel")
-
+    #crossSellings = fields.ListField(schema=fields.ForeignKey("product.product_cross_selling_model.ProductCrossSellingModel"))
     # name
     # description
     # packUnit

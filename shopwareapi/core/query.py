@@ -55,7 +55,6 @@ class QuerySet:
         results = []
 
         for item in result_response.get("data"):
-
             results.append(self.model.from_api(self._normalize_response(item), self.model._meta))
 
         return self._chain(_result_cache=results)
@@ -92,17 +91,19 @@ class QuerySet:
             query.update({"includes": includes})
 
         filter = []
+        associations = []
 
         for field in self.model._meta.fields:
 
             if field.name in kwargs:
                 search_value = kwargs.get(field.name)
-
                 filter.append({
                     "type": "equals",
                     "field": field.attname,
                     "value": field.to_simple(search_value)
                 })
+
+
         if filter:
             query.update({"filter": filter})
 

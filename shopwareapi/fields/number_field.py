@@ -11,9 +11,8 @@ class NumberField(BaseField):
         return "NumberField"
 
     def to_python(self, value):
-        if self.null is True and value is None:
+        if self.null is True and value is None or value == "":
             return None
-
         try:
             return int(value)
         except (AttributeError, ValueError, TypeError):
