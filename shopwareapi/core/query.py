@@ -6,7 +6,7 @@ class QuerySet:
     def __init__(self, *args, **kwargs):
         self.model = kwargs.pop("model", None)
         self.filter_query = kwargs.pop("filter_query", dict())
-        self._result_cache = kwargs.pop("results", None)
+        self._result_cache = kwargs.pop("results", [])
 
     def __len__(self):
         return len(self._result_cache)

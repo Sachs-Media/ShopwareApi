@@ -12,7 +12,6 @@ class ListField(BaseField):
         if schema is None:
             raise AttributeError("Please define a Schema")
         self._schema = schema
-
         super().__init__(verbose_name, **kwargs)
 
     def get_internal_type(self):

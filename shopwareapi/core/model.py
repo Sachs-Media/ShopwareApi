@@ -1,8 +1,9 @@
 import json
 
 from shopwareapi.core.lazymodel import LazyModel
-from shopwareapi.core.field import BaseRelationField
+from shopwareapi.fields import ForeignKey, ManyToOneField
 from shopwareapi.core.manager import Manager
+from shopwareapi.core.query import QuerySet
 from shopwareapi.core.options import Options
 from shopwareapi.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from shopwareapi.utils.helper import has_contribute_to_class, subclass_exception
@@ -88,6 +89,7 @@ class ModelBase(type):
     def add_to_class(cls, name, value):
         if has_contribute_to_class(value):
             # Assign api objects via contribute_to_class
+
             value.contribute_to_class(cls, name)
         else:
             # Assign strange attributes directly
@@ -102,8 +104,9 @@ class Model(metaclass=ModelBase):
             val = field.get_default()
 
             if kwargs:
-                if isinstance(field, BaseRelationField):
+                if isinstance(field, ForeignKey):
                     related_model_class = field.get_related_model_class()
+
                     if field.name in kwargs:
                         val = kwargs.pop(field.name)
                     else:
@@ -111,7 +114,17 @@ class Model(metaclass=ModelBase):
                             val = related_model_class.from_api({
                                 field.remote_field.name: kwargs.pop(field.attname)
                             }, self._meta.swapi_client, True)
-
+                elif isinstance(field, ManyToOneField):
+                    related_model_class = field.get_related_model_class()
+                    vallist = []
+                    if field.name in kwargs:
+                        vallist = kwargs.pop(field.name)
+                    elif field.attname in kwargs:
+                        vallist = kwargs.pop(field.attname)
+                    qs_pre = []
+                    for data in vallist:
+                        qs_pre.append(related_model_class.from_api(data, self._meta.swapi_client))
+                    val = QuerySet(related_model_class, results=qs_pre)
                 elif field.name in kwargs:
                     val = kwargs.pop(field.name)
 
@@ -136,12 +149,10 @@ class Model(metaclass=ModelBase):
         return new
 
     def create(self, force=False):
-
         if force:
             changed_fields = self._meta.fields
         else:
             changed_fields = self._diff_fields()
-
 
         package = {
             #field.attname: field.to_simple(getattr(self, field.name)) for field in changed_fields if

@@ -38,18 +38,14 @@ class ManyToOneField(BaseRelationField):
         return wrapper
 
     def to_simple(self, val):
-
-        print(val)
         result = []
         for model in val:
             package = {}
-            for field in model._meta.fields:
-                if field.read_only is False:
-                    print("#"*100)
-                    print(model)
-                    print(field.name)
-                    print(getattr(model, field.name))
-                    package[field.attname] = field.to_simple(getattr(model, field.name))
-
-            result.append(package)
+            if type(model) is dict:
+                result.append(model)
+            else:
+                for field in model._meta.fields:
+                    if field.read_only is False:
+                        package[field.attname] = field.to_simple(getattr(model, field.name))
+                result.append(package)
         return result
