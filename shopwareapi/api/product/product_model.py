@@ -27,7 +27,7 @@ class ProductModel(Model):
         "visibility": fields.NumberField(),
     }))
 
-    media = fields.ManyToOneField("product.product_media_model.ProductMediaModel", related_name="media")
+    media = fields.ManyToOneField("product.product_media_model.ProductMediaModel")
 
     #media = fields.ListField(schema=fields.DictField(schema={
     #    "id": fields.ForeignKey("product.product_media_model.ProductMediaModel", related_name="id"),

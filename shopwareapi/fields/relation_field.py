@@ -1,4 +1,4 @@
-from shopwareapi.core.field import BaseRelationField, return_None
+from shopwareapi.core.field import BaseRelationField, return_None, BaseField
 from shopwareapi.core.lazymodel import LazyModel
 from shopwareapi.core.query import QuerySet
 import logging
@@ -12,7 +12,6 @@ class ForeignKey(BaseRelationField):
     def to_simple(self, val):
         if isinstance(val, LazyModel):
             return val._kwargs[val._model._meta.pk.name]
-
         pk_val = getattr(val, self.related_model._meta.pk.name)
         return val._meta.pk.to_simple(pk_val)
 
@@ -22,11 +21,6 @@ class ManyToOneField(BaseRelationField):
 
     def get_attname(self):
         return self.name
-
-    def from_api(self, *args, **kwargs):
-        print(args)
-        print(kwargs)
-        return "bS"
 
     def _get_default(self):
         res = super(ManyToOneField, self)._get_default()
@@ -39,13 +33,23 @@ class ManyToOneField(BaseRelationField):
 
     def to_simple(self, val):
         result = []
+
         for model in val:
-            package = {}
             if type(model) is dict:
-                result.append(model)
+                package = {}
+                for key, value in model.items():
+                    for field in self.get_related_model_class()._meta.fields:
+                        if key == field.attname or key == field.name:
+                            if isinstance(field, BaseField):
+                                package[field.get_attname()] = field.to_simple(value)
+                            else:
+                                package[field.get_attname()] = value._get_pk_val()
+                result.append(package)
             else:
+                package = {}
                 for field in model._meta.fields:
                     if field.read_only is False:
-                        package[field.attname] = field.to_simple(getattr(model, field.name))
+                        if getattr(model, field.name):
+                            package[field.get_attname()] = field.to_simple(getattr(model, field.name))
                 result.append(package)
         return result

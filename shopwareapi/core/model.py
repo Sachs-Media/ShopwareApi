@@ -9,6 +9,7 @@ from shopwareapi.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from shopwareapi.utils.helper import has_contribute_to_class, subclass_exception
 import logging
 
+
 log = logging.getLogger(__name__)
 
 
@@ -131,7 +132,6 @@ class Model(metaclass=ModelBase):
             if field.null and field.attname in kwargs and kwargs.get(field.attname) is None:
                 val = field.get_default()
 
-
             # self.add_to_class(field.name, field.clean(val))
             self.__dict__[field.name] = field.clean(val)
             # setattr(self, field.name, field.clean(val))
@@ -183,12 +183,8 @@ class Model(metaclass=ModelBase):
             field.attname: field.to_simple(getattr(self, field.name)) for field in changed_fields if
             field.read_only is False
         }
-
-        if self._meta.pk.attname in self._meta.pk.attname:
-            pk_val = package[self._meta.pk.attname]
-
         self._meta.swapi_client.patch(url={
-            "model": (self._meta.api_endpoint, pk_val)
+            "model": (self._meta.api_endpoint, self._get_pk_val().hex)
         }, data=json.dumps(package))
 
     def _diff_fields(self):
