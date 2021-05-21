@@ -73,6 +73,7 @@ class MediaModel(Model):
             headers={
                 "Content-Type": str(file.get_content_type())
         })
+        return file
 
     def upload_from_path(self, path, **kwargs):
         file_kwargs = {
